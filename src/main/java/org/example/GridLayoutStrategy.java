@@ -13,9 +13,14 @@ public class GridLayoutStrategy implements RoomLayoutStrategy {
         Map<Room, Point> roomLocations = new HashMap<>();
 
         Integer dimension = Math.toIntExact(Math.round(Math.sqrt(rooms.size())));
-        Integer rowSpacing = (panelHeight - roomHeight * 2) / (dimension - 1);
-        Integer colSpacing = (panelWidth - roomWidth * 2) / (dimension - 1);
         Point currentLocation = new Point(roomWidth, roomHeight);
+        if (rooms.size() == 1) {
+            roomLocations.put(rooms.get(0), currentLocation);
+            return roomLocations;
+        }
+
+        Integer    rowSpacing = (panelHeight - roomHeight * 2) / (dimension - 1);
+        Integer    colSpacing = (panelWidth - roomWidth * 2) / (dimension - 1);
         Integer roomCount = 0;
         for (Room currentRoom : rooms) {
             roomLocations.put(currentRoom, currentLocation);

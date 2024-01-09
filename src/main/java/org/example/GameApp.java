@@ -33,7 +33,7 @@ public class GameApp {
     public static void main(String[] args) {
         new GameApp(
                 "Arcane Adventure Game",
-                Room.createRoomGrid(3),
+                Room.createRoomGrid(1),
                 new GridLayoutStrategy());
 //                new RadialLayoutStrategy());
     }

@@ -12,12 +12,14 @@ import java.util.Map;
 public class GamePanel extends JPanel {
     private static final Logger logger = LogManager.getLogger(GamePanel.class);
 
-    final Integer WIDTH = 800;
-    final Integer HEIGHT = 800;
+    static final Integer WIDTH = 800;
+    static final Integer HEIGHT = 800;
     final Integer ROOM_WIDTH = 100;
     final Integer ROOM_HEIGHT = 100;
     Color BACKGROUND_COLOR = Color.YELLOW;
     Color ROOM_COLOR = Color.GREEN;
+    Color TEXT_COLOR = Color.BLACK;
+    Color CONNECTOR_COLOR = Color.BLUE;
 
     List<Room> caveRooms;
     RoomLayoutStrategy roomLayoutStrategy;
@@ -33,26 +35,35 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         logger.info("In paintComponent. Width of parent is: " + this.getParent().getWidth());
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(ROOM_COLOR);
-        paintRooms(g2, caveRooms);
+        paintRooms(g, caveRooms);
     }
 
-    void paintRoomCenteredAt(Graphics2D g2, Point roomCenter, Room room) {
-        g2.setColor(Color.GREEN);
+    void paintRoomCenteredAt(Graphics g, Point roomCenter, Room room) {
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setColor(ROOM_COLOR);
         Point upperRightCorner = new Point(roomCenter.x - ROOM_WIDTH / 2, roomCenter.y - ROOM_HEIGHT / 2);
         g2.fillRect(upperRightCorner.x, upperRightCorner.y, ROOM_WIDTH, ROOM_HEIGHT);
-        g2.setColor(Color.BLACK);
+        g2.setColor(TEXT_COLOR);
+
+        Font originalFont = g2.getFont();
+        Font boldFont = new Font(originalFont.getName(), Font.BOLD, originalFont.getSize());
+
+        // Print the room name
+        g2.setFont(boldFont);
         Integer fontHeight = g2.getFontMetrics().getHeight();
         g2.drawString(room.getName(), upperRightCorner.x + 2, upperRightCorner.y + fontHeight);
+
+        // Now print the contents of the room
         Integer yPosition = upperRightCorner.y + fontHeight * 2 + 2;
+        g2.setFont(originalFont);
         for (String desc : room.getContents()) {
             g2.drawString(desc, upperRightCorner.x + 10, yPosition);
             yPosition += fontHeight + 2;
         }
     }
 
-    void paintRooms(Graphics2D g2, List<Room> rooms) {
+    void paintRooms(Graphics g, List<Room> rooms) {
+
         Integer currentWindowWidth = this.getParent().getWidth();
         Integer currentWindowHeight = this.getParent().getHeight();
 
@@ -62,9 +73,9 @@ public class GamePanel extends JPanel {
         );
 
         for (Room currentRoom : rooms) {
-            paintRoomCenteredAt(g2, roomLocations.get(currentRoom), currentRoom);
+            paintRoomCenteredAt(g, roomLocations.get(currentRoom), currentRoom);
         }
-        drawRoomConnections(g2, rooms, roomLocations);
+        drawRoomConnections(g, rooms, roomLocations);
     }
 
 //    void paintRoomsRadially(Graphics2D g2, List<Room> rooms) {
@@ -113,7 +124,9 @@ public class GamePanel extends JPanel {
 //        drawRoomConnections(g2, rooms, roomLocations);
 //    }
 
-    private static void drawRoomConnections(Graphics2D g2, List<Room> rooms, Map<Room, Point> roomLocations) {
+    private void drawRoomConnections(Graphics g, List<Room> rooms, Map<Room, Point> roomLocations) {
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setColor(CONNECTOR_COLOR);
         for (Room currentRoom : rooms) {
             for (Room neighbor : currentRoom.getNeighbors()) {
                 Point roomLocation = roomLocations.get(currentRoom);
