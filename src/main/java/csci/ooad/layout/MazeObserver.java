@@ -16,15 +16,21 @@ public class MazeObserver implements IMazeObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
     JFrame window;
     GamePanel gamePanel;
+    GamePanel.RoomShape roomShape;
     IRoomLayoutStrategy layoutStrategy;
 
     public MazeObserver(String title, IRoomLayoutStrategy layoutStrategy) {
+        this(title, layoutStrategy, GamePanel.RoomShape.CIRCLE);
+    }
+
+    public MazeObserver(String title, IRoomLayoutStrategy layoutStrategy, GamePanel.RoomShape roomShape) {
         window = new JFrame(title);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(true);
         window.setLocationRelativeTo(null);
 
         this.layoutStrategy = layoutStrategy;
+        this.roomShape = roomShape;
     }
 
     @Override
@@ -59,7 +65,6 @@ public class MazeObserver implements IMazeObserver {
         MazeObserver mazeObserver = new MazeObserver(
                 "Arcane Adventure Game",
                 new GridLayoutStrategy());
-//                new RadialLayoutStrategy());
 
         mazeObserver.update(Room.createRoomGrid(1));
     }
