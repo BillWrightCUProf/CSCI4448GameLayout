@@ -1,9 +1,25 @@
 plugins {
     id 'java'
+    // These next two plugins are for signing and pushing a jar to the Maven repository
+    // There is considerable external setup to do this:
+    //      https://central-stage.sonatype.org/register/central-portal/#choosing-a-namespace
+    id 'maven-publish'
+    id 'signing'
 }
 
-group = 'csci.ooad.layout'
-version = '1.0-SNAPSHOT'
+println("mavenCentralUsername: $mavenCentralUsername")
+println("mavenCentralPassword: $mavenCentralPassword")
+
+group = 'io.github.billwrightcuprof'
+archivesBaseName = 'csci4448.gameLayout'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = 17
+    targetCompatibility = 17
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
@@ -20,4 +36,67 @@ test {
     useJUnitPlatform()
 }
 
-println configurations.runtimeClasspath.resolve()
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'csci4448.gameLayout'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'CSCI-4448/5448: Game Layout Library'
+                // optionally artifactId can be defined here
+                description = 'This is a small library that uses the Java 2D Graphics library to layout a series of connected rooms that form a maze.'
+                url = 'https://github.com/BillWrightCUProf/CSCI4448GameLayout'
+
+                scm {
+                    connection = 'scm:svn:https://github.com/BillWrightCUProf/CSCI4448GameLayout'
+                    developerConnection = 'scm:svn:https://github.com/BillWrightCUProf/CSCI4448GameLayout'
+                    url = 'http://https://github.com/BillWrightCUProf/CSCI4448GameLayout'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'billwright'
+                        name = 'Bill Wright'
+                        email = 'bill.wright@colorado.edu'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username = mavenCentralUsername
+                password = mavenCentralPassword
+            }
+
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
