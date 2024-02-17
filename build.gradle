@@ -60,7 +60,7 @@ publishing {
             pom {
                 name = 'CSCI-4448/5448: Game Layout Library'
                 // optionally artifactId can be defined here
-                description = 'This is a small library that uses the Java 2D Graphics library to layout a series of connected rooms that form a maze.'
+                description = 'This small library uses the Java 2D Graphics library to lay out a series of connected rooms that form a maze.'
                 url = 'https://github.com/BillWrightCUProf/CSCI4448GameLayout'
 
                 scm {
