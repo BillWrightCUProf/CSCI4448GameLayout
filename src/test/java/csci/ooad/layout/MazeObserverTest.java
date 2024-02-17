@@ -1,5 +1,6 @@
 package csci.ooad.layout;
 
+import csci.ooad.layout.example.ExampleMaze;
 import org.junit.jupiter.api.Test;
 
 class MazeObserverTest {
@@ -10,13 +11,13 @@ class MazeObserverTest {
                 "Arcane Adventure Game - Radial Layout",
                 new RadialLayoutStrategy());
 
-        mazeObserver.update(Room.createRoomGrid(2));
+        mazeObserver.update(ExampleMaze.createRoomGrid(2));
         mazeObserver.paintToFile("sampleLayouts/testFourRoomRadialLayout");
 
-        mazeObserver.update(Room.createRoomGrid(3));
+        mazeObserver.update(ExampleMaze.createRoomGrid(3));
         mazeObserver.paintToFile("sampleLayouts/testNineRoomRadialLayout");
 
-        mazeObserver.update(Room.createRoomGrid(4));
+        mazeObserver.update(ExampleMaze.createRoomGrid(4));
         mazeObserver.paintToFile("sampleLayouts/testSixteenRoomRadialLayout");
     }
 
@@ -26,14 +27,14 @@ class MazeObserverTest {
                 "Arcane Adventure Game - Grid Layout",
                 new GridLayoutStrategy());
 
-        mazeObserver.update(Room.createRoomGrid(2));
-        mazeObserver.paintToFile("sampleLayouts/testFourRoomGridLayout");
+        mazeObserver.update(ExampleMaze.createRoomGrid(2));
+        mazeObserver.paintToFile("sampleLayouts/testFourRoomRadialLayout");
 
-        mazeObserver.update(Room.createRoomGrid(3));
-        mazeObserver.paintToFile("sampleLayouts/testNineRoomGridLayout");
+        mazeObserver.update(ExampleMaze.createRoomGrid(3));
+        mazeObserver.paintToFile("sampleLayouts/testNineRoomRadialLayout");
 
-        mazeObserver.update(Room.createRoomGrid(4));
-        mazeObserver.paintToFile("sampleLayouts/testSixteenRoomGridLayout");
+        mazeObserver.update(ExampleMaze.createRoomGrid(4));
+        mazeObserver.paintToFile("sampleLayouts/testSixteenRoomRadialLayout");
     }
 
     @Test
@@ -42,10 +43,10 @@ class MazeObserverTest {
                 "Arcane Adventure Game - 2-Room Layout",
                 new RadialLayoutStrategy());
 
-        mazeObserver.update(Room.createFullyConnectedRooms(2, true));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(2, true));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected2RoomLayout.radial");
 
-        mazeObserver.update(Room.createFullyConnectedRooms(2, false));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(2, false));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected2RoomOneWayLayout.radial");
     }
 
@@ -55,22 +56,22 @@ class MazeObserverTest {
                 "Arcane Adventure Game - Radial Layout",
                 new RadialLayoutStrategy());
 
-        mazeObserver.update(Room.createFullyConnectedRooms(2));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(2));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected2RoomLayout.radial");
 
-        mazeObserver.update(Room.createFullyConnectedRooms(3));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(3));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected3RoomLayout.radial");
 
-        mazeObserver.update(Room.createFullyConnectedRooms(3, false));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(3, false));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnectedOneWay3RoomLayout.radial");
 
-        mazeObserver.update(Room.createFullyConnectedRooms(4));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(4));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected4RoomLayout.radial");
 
-        mazeObserver.update(Room.createFullyConnectedRooms(9));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(9));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected9RoomLayout.radial");
 
-        mazeObserver.update(Room.createFullyConnectedRooms(9, false));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(9, false));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnectedOneWay9RoomLayout.radial");
     }
 
@@ -80,10 +81,10 @@ class MazeObserverTest {
                 "Arcane Adventure Game - Radial Layout",
                 new GridLayoutStrategy());
 
-        mazeObserver.update(Room.createFullyConnectedRooms(4));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(4));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected4RoomLayout.grid");
 
-        mazeObserver.update(Room.createFullyConnectedRooms(16));
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(16));
         mazeObserver.paintToFile("sampleLayouts/testFullyConnected16RoomLayout.grid");
     }
 }

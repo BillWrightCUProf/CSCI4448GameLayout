@@ -1,20 +1,20 @@
-package csci.ooad.layout;
+package csci.ooad.layout.example;
+
+import csci.ooad.layout.IRoom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room implements IConnectedRoom {
+class Room implements IRoom {
     private final String name;
     private final List<Room> neighbors;
 
-    public static List<IConnectedRoom> createRoomGrid(Integer dimension) {
-        List<IConnectedRoom> irooms = new ArrayList<>();
+    public static List<Room> createRoomGrid(Integer dimension) {
         List<Room> rooms = new ArrayList<>();
         for (Integer row = 0; row < dimension; row++) {
             for (Integer col = 0; col < dimension; col++) {
                 Room currentRoom = new Room("Room R" + row + "C" + col);
                 rooms.add(currentRoom);
-                irooms.add(currentRoom);
             }
         }
         for (Integer i = 0; i < rooms.size(); i++) {
@@ -25,15 +25,14 @@ public class Room implements IConnectedRoom {
                 rooms.get(i).addNeighbor(rooms.get(i + dimension));
             }
         }
-        return irooms;
+        return rooms;
     }
 
-    public static List<IConnectedRoom> createFullyConnectedRooms(Integer numRooms) {
+    public static List<Room> createFullyConnectedRooms(Integer numRooms) {
         return createFullyConnectedRooms(numRooms, true);
     }
 
-    public static List<IConnectedRoom> createFullyConnectedRooms(Integer numRooms, Boolean twoWayConnections) {
-        List<IConnectedRoom> irooms = new ArrayList<>();
+    public static List<Room> createFullyConnectedRooms(Integer numRooms, Boolean twoWayConnections) {
         List<Room> rooms = new ArrayList<>();
         for (int i = 0; i < numRooms; i++) {
             Room currentRoom = new Room("Room " + i);
@@ -45,9 +44,8 @@ public class Room implements IConnectedRoom {
                 }
             }
             rooms.add(currentRoom);
-            irooms.add(currentRoom);
         }
-        return irooms;
+        return rooms;
     }
 
     public Room(String aName) {
@@ -76,7 +74,7 @@ public class Room implements IConnectedRoom {
         return name;
     }
 
-    public List<IConnectedRoom> getNeighbors() {
+    public List<IRoom> getNeighbors() {
         // Don't just return the list, as it could be modified
         return new ArrayList<>(neighbors);
     }

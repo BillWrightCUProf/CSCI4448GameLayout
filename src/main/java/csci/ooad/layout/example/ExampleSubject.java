@@ -1,28 +1,32 @@
-package csci.ooad.layout;
+package csci.ooad.layout.example;
 
-import java.util.List;
+import csci.ooad.layout.IMaze;
+import csci.ooad.layout.IMazeSubject;
+import csci.ooad.layout.MazeObserver;
+import csci.ooad.layout.RadialLayoutStrategy;
 
-public class ExampleSubject implements IMazeSubject {
+class ExampleSubject implements IMazeSubject {
 
-    List<IConnectedRoom> rooms;
+    IMaze maze;
 
-    @Override
-    public List<IConnectedRoom> getConnectedRooms() {
-        return rooms;
-    }
 
     public void playGame() throws InterruptedException {
-        rooms = Room.createRoomGrid(2);
+        maze = ExampleMaze.createRoomGrid(2);
         notifyObservers();
         Thread.sleep(2000);
 
-        rooms = Room.createFullyConnectedRooms(4);
+        maze = ExampleMaze.createFullyConnectedRooms(4);
         notifyObservers();
         Thread.sleep(2000);
 
-        rooms = Room.createFullyConnectedRooms(6, false);
+        maze = ExampleMaze.createFullyConnectedRooms(6, false);
         notifyObservers();
         Thread.sleep(2000);
+    }
+
+    @Override
+    public IMaze getMaze() {
+        return maze;
     }
 
     static public void main(String... args) throws InterruptedException {

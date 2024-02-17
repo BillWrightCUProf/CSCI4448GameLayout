@@ -7,12 +7,12 @@ plugins {
     id 'signing'
 }
 
-println("mavenCentralUsername: $mavenCentralUsername")
-println("mavenCentralPassword: $mavenCentralPassword")
+//println("mavenCentralUsername: $mavenCentralUsername")
+//println("mavenCentralPassword: $mavenCentralPassword")
 
 group = 'io.github.billwrightcuprof'
 archivesBaseName = 'csci4448.gameLayout'
-version = '1.0.0'
+version = '1.2.0'
 
 java {
     sourceCompatibility = 17
@@ -88,10 +88,10 @@ publishing {
     }
     repositories {
         maven {
-            credentials {
-                username = mavenCentralUsername
-                password = mavenCentralPassword
-            }
+//            credentials {
+//                username = mavenCentralUsername
+//                password = mavenCentralPassword
+//            }
 
             def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"

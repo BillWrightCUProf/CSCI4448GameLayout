@@ -1,5 +1,6 @@
-package csci.ooad.layout;
+package csci.ooad.layout.example;
 
+import csci.ooad.layout.example.Room;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 
@@ -7,7 +8,7 @@ class RoomTest {
 
     @Test
     void testOneRoomCreation() {
-        List<IConnectedRoom> rooms = Room.createRoomGrid(1);
+        List<Room> rooms = Room.createRoomGrid(1);
         assert rooms.size() == 1;
     }
 }
