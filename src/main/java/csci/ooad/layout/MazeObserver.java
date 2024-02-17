@@ -1,5 +1,6 @@
 package csci.ooad.layout;
 
+import csci.ooad.layout.example.ExampleMaze;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 public class MazeObserver implements IMazeObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
@@ -34,11 +34,11 @@ public class MazeObserver implements IMazeObserver {
     }
 
     @Override
-    public void update(List<IConnectedRoom> rooms) {
+    public void update(IMaze maze) {
         if (gamePanel != null) {
             window.remove(gamePanel);
         }
-        gamePanel = new GamePanel(rooms, layoutStrategy);
+        gamePanel = new GamePanel(maze, layoutStrategy);
         window.add(gamePanel);
         window.pack();
         window.setVisible(true);
@@ -66,6 +66,6 @@ public class MazeObserver implements IMazeObserver {
                 "Arcane Adventure Game",
                 new GridLayoutStrategy());
 
-        mazeObserver.update(Room.createRoomGrid(1));
+        mazeObserver.update(ExampleMaze.createRoomGrid(2));
     }
 }

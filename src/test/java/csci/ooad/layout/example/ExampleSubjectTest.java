@@ -1,5 +1,6 @@
-package csci.ooad.layout;
+package csci.ooad.layout.example;
 
+import csci.ooad.layout.example.ExampleSubject;
 import org.junit.jupiter.api.Test;
 
 class ExampleSubjectTest {

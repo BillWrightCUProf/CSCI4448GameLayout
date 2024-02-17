@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IRoomLayoutStrategy {
-    Map<IConnectedRoom, Point> calculateRoomLocations(List<IConnectedRoom> rooms,
-                                            Integer panelWidth, Integer panelHeight,
-                                            Integer roomWidth, Integer roomHeight);
+    Map<IRoom, Point> calculateRoomLocations(List<IRoom> rooms,
+                                             Integer panelWidth, Integer panelHeight,
+                                             Integer roomWidth, Integer roomHeight);
 }

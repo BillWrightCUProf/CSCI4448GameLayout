@@ -10,9 +10,10 @@ public interface IMazeSubject {
     }
     default void notifyObservers() {
         for (IMazeObserver observer : observers) {
-            observer.update(getConnectedRooms());
+            observer.update(getMaze());
         }
     }
 
-    List<IConnectedRoom> getConnectedRooms();
+    IMaze getMaze();
+
 }

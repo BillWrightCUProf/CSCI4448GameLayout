@@ -2,8 +2,7 @@ package csci.ooad.layout;
 
 import java.util.List;
 
-public interface IConnectedRoom {
+public interface IRoom {
     String getName();
     List<String> getContents();
-    List<IConnectedRoom> getNeighbors();
 }

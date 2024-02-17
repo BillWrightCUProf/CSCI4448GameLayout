@@ -20,7 +20,7 @@ public class GamePanel extends JPanel {
     Color TEXT_COLOR = Color.BLACK;
     Color CONNECTOR_COLOR = Color.BLUE;
 
-    List<IConnectedRoom> rooms;
+    IMaze maze;
     IRoomLayoutStrategy roomLayoutStrategy;
     RoomShape roomShape;
 
@@ -29,15 +29,15 @@ public class GamePanel extends JPanel {
         SQUARE
     }
 
-    public GamePanel(List<IConnectedRoom> rooms, IRoomLayoutStrategy layoutStrategy) {
-        this(rooms, layoutStrategy, RoomShape.CIRCLE);
+    public GamePanel(IMaze maze, IRoomLayoutStrategy layoutStrategy) {
+        this(maze, layoutStrategy, RoomShape.CIRCLE);
     }
 
-    public GamePanel(List<IConnectedRoom> rooms, IRoomLayoutStrategy layoutStrategy, RoomShape roomShape) {
+    public GamePanel(IMaze maze, IRoomLayoutStrategy layoutStrategy, RoomShape roomShape) {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(BACKGROUND_COLOR);
         this.setDoubleBuffered(true);
-        this.rooms = rooms;
+        this.maze = maze;
         this.roomLayoutStrategy = layoutStrategy;
         this.roomShape = roomShape;
     }
@@ -45,10 +45,10 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         logger.debug("In paintComponent. Width of parent is: " + this.getParent().getWidth());
-        paintRooms(g, rooms);
+        paintMaze(g, maze);
     }
 
-    void paintRoomCenteredAt(Graphics g, Point roomCenter, IConnectedRoom room) {
+    void paintRoomCenteredAt(Graphics g, Point roomCenter, IRoom room) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(ROOM_COLOR);
         Point upperRightCorner = new Point(roomCenter.x - ROOM_WIDTH / 2, roomCenter.y - ROOM_HEIGHT / 2);
@@ -79,26 +79,26 @@ public class GamePanel extends JPanel {
         }
     }
 
-    void paintRooms(Graphics g, List<IConnectedRoom> rooms) {
+    void paintMaze(Graphics g, IMaze maze) {
         Integer currentWindowWidth = this.getParent().getWidth();
         Integer currentWindowHeight = this.getParent().getHeight();
 
-        Map<IConnectedRoom, Point> roomLocations = roomLayoutStrategy.calculateRoomLocations(
-                rooms, currentWindowWidth, currentWindowHeight,
+        Map<IRoom, Point> roomLocations = roomLayoutStrategy.calculateRoomLocations(
+                maze.getRooms(), currentWindowWidth, currentWindowHeight,
                 ROOM_WIDTH, ROOM_HEIGHT
         );
 
-        for (IConnectedRoom currentRoom : rooms) {
+        for (IRoom currentRoom : maze.getRooms()) {
             paintRoomCenteredAt(g, roomLocations.get(currentRoom), currentRoom);
         }
-        drawRoomConnections(g, rooms, roomLocations);
+        drawRoomConnections(g, maze, roomLocations);
     }
 
-    private void drawRoomConnections(Graphics g, List<IConnectedRoom> rooms, Map<IConnectedRoom, Point> roomLocations) {
+    private void drawRoomConnections(Graphics g, IMaze maze, Map<IRoom, Point> roomLocations) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(CONNECTOR_COLOR);
-        for (IConnectedRoom currentRoom : rooms) {
-            for (IConnectedRoom neighbor : currentRoom.getNeighbors()) {
+        for (IRoom currentRoom : maze.getRooms()) {
+            for (IRoom neighbor : maze.getNeighborsOf(currentRoom)) {
                 Point roomLocation = roomLocations.get(currentRoom);
                 Point neighborLocation = roomLocations.get(neighbor);
                 drawArrow(g2, roomLocation, neighborLocation);

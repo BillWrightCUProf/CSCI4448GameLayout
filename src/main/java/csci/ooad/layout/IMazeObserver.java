@@ -3,6 +3,6 @@ package csci.ooad.layout;
 import java.util.List;
 
 public interface IMazeObserver {
-    void update(List<IConnectedRoom> rooms);
+    void update(IMaze maze);
     void paintToFile(String filePath);
 }
