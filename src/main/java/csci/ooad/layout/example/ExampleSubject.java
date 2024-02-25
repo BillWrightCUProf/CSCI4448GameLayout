@@ -1,27 +1,36 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.IMaze;
-import csci.ooad.layout.IMazeSubject;
-import csci.ooad.layout.MazeObserver;
-import csci.ooad.layout.RadialLayoutStrategy;
+import csci.ooad.layout.*;
 
 class ExampleSubject implements IMazeSubject {
 
     IMaze maze;
 
 
-    public void playGame() throws InterruptedException {
-        maze = ExampleMaze.createRoomGrid(2);
-        notifyObservers();
+    public void playGameWithChangingMazeShape() throws InterruptedException {
+        maze = ExampleMaze.createRoomGrid(4);
+        notifyObservers("Created 2x2 Grid Maze");
         Thread.sleep(2000);
 
         maze = ExampleMaze.createFullyConnectedRooms(4);
-        notifyObservers();
+        notifyObservers("Created 4 Fully Connected Rooms");
         Thread.sleep(2000);
 
         maze = ExampleMaze.createFullyConnectedRooms(6, false);
-        notifyObservers();
+        notifyObservers("Created 6 Fully Connected Rooms");
         Thread.sleep(2000);
+    }
+
+    public void playGame(Integer numRooms, String layout) throws InterruptedException {
+        if (layout.equals("grid")) {
+            maze = ExampleMaze.createRoomGrid(numRooms);
+        } else {
+            maze = ExampleMaze.createFullyConnectedRooms(numRooms);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            notifyObservers("Turn " + i);
+        }
     }
 
     @Override
@@ -31,8 +40,11 @@ class ExampleSubject implements IMazeSubject {
 
     static public void main(String... args) throws InterruptedException {
         ExampleSubject game = new ExampleSubject();
-        MazeObserver observer = new MazeObserver("Example Game", new RadialLayoutStrategy());
+        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useRadialLayoutStrategy()
+                .build();
         game.attach(observer);
-        game.playGame();
+        game.playGameWithChangingMazeShape();
     }
 }

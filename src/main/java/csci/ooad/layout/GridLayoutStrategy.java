@@ -7,23 +7,21 @@ import java.util.Map;
 
 public class GridLayoutStrategy implements IRoomLayoutStrategy {
     @Override
-    public Map<IRoom, Point> calculateRoomLocations(List<IRoom> rooms,
-                                                    Integer panelWidth, Integer panelHeight,
-                                                    Integer roomWidth, Integer roomHeight) {
-        Map<IRoom, Point> roomLocations = new HashMap<>();
+    public Map<String, Point> calculateRoomLocations(List<String> roomNames, Integer panelWidth, Integer roomWidth) {
+        Map<String, Point> roomLocations = new HashMap<>();
 
-        Integer dimension = Math.toIntExact(Math.round(Math.sqrt(rooms.size())));
-        Point currentLocation = new Point(roomWidth, roomHeight);
-        if (rooms.size() == 1) {
-            roomLocations.put(rooms.get(0), currentLocation);
-            return roomLocations;
+        Integer dimension = Math.toIntExact(Math.round(Math.sqrt(roomNames.size())));
+        Point currentLocation = new Point(roomWidth, roomWidth);
+        if (roomNames.size() < 3) {
+            currentLocation = new Point(panelWidth/2 - roomWidth/2, panelWidth/3);
         }
 
-        Integer rowSpacing = (panelHeight - roomHeight * 2) / (dimension - 1);
-        Integer colSpacing = (panelWidth - roomWidth * 2) / (dimension - 1);
+        Integer rowSpacing = (panelWidth - roomWidth * 2) / (dimension + 1);
+        Integer colSpacing = (panelWidth - roomWidth * 2) / dimension;
+
         Integer roomCount = 0;
-        for (IRoom currentRoom : rooms) {
-            roomLocations.put(currentRoom, currentLocation);
+        for (String currentRoomName : roomNames) {
+            roomLocations.put(currentRoomName, currentLocation);
             roomCount += 1;
             if (roomCount % dimension == 0) {
                 currentLocation = new Point(roomWidth, currentLocation.y + rowSpacing);

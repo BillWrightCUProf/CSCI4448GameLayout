@@ -8,12 +8,11 @@ public interface IMazeSubject {
     default void attach(IMazeObserver observer) {
         observers.add(observer);
     }
-    default void notifyObservers() {
+    default void notifyObservers(String statusMessage) {
         for (IMazeObserver observer : observers) {
-            observer.update(getMaze());
+            observer.update(getMaze(), statusMessage);
         }
     }
 
     IMaze getMaze();
-
 }

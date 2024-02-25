@@ -14,22 +14,23 @@ import java.util.Map;
 public class ExampleMaze implements IMaze {
 
     private List<Room> rooms;
-    private Map<IRoom, Room> roomMap = new HashMap<>();
+    private Map<String, Room> roomMap = new HashMap<>();
 
     private ExampleMaze(List<Room> rooms) {
         this.rooms = rooms;
         for (Room room : rooms) {
-            roomMap.put(room, room);
+            roomMap.put(room.getName(), room);
         }
     }
 
     /**
      *
-     * @param gridSize
+     * @param numRooms
      * @return
      */
-    public static IMaze createRoomGrid(Integer gridSize) {
-        return new ExampleMaze(Room.createRoomGrid(2));
+    public static IMaze createRoomGrid(Integer numRooms) {
+        Integer gridSize = (int)Math.round(Math.sqrt(numRooms));
+        return new ExampleMaze(Room.createRoomGrid(gridSize));
     }
 
     public static IMaze createFullyConnectedRooms(Integer numRooms) {
@@ -41,12 +42,17 @@ public class ExampleMaze implements IMaze {
     }
 
     @Override
-    public List<IRoom> getRooms() {
-        return new ArrayList<>(rooms);
+    public List<String> getRooms() {
+        return roomMap.keySet().stream().toList();
     }
 
     @Override
-    public List<IRoom> getNeighborsOf(IRoom room) {
-        return roomMap.get(room).getNeighbors();
+    public List<String> getNeighborsOf(String room) {
+        return roomMap.get(room).getNeighbors().stream().map(IRoom::getName).toList();
+    }
+
+    @Override
+    public List<String> getContents(String room) {
+        return roomMap.get(room).getContents();
     }
 }

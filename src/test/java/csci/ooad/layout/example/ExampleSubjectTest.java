@@ -1,6 +1,6 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.example.ExampleSubject;
+import csci.ooad.layout.MazeObserver;
 import org.junit.jupiter.api.Test;
 
 class ExampleSubjectTest {
@@ -9,6 +9,77 @@ class ExampleSubjectTest {
     void testPlayGame() throws InterruptedException {
         // The arguments here aren't used, but show an example of how you could customize the running of an app
         ExampleSubject.main("--shape", "Circle");
+    }
+
+    @Test
+    void testPlayGameOneRoomMaze() throws InterruptedException {
+        ExampleSubject game = new ExampleSubject();
+        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useGridLayoutStrategy()
+                .build();
+        game.attach(observer);
+        game.playGame(1, "grid");
+    }
+
+    @Test
+    void testPlayGameTwoRoomMaze() throws InterruptedException {
+        ExampleSubject game = new ExampleSubject();
+        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useGridLayoutStrategy()
+                .build();
+        game.attach(observer);
+        game.playGame(2, "fully");
+    }
+
+    @Test
+    void testPlayGameThreeRoomMaze() throws InterruptedException {
+        ExampleSubject game = new ExampleSubject();
+        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useGridLayoutStrategy()
+                .build();
+        game.attach(observer);
+        game.playGame(3, "fully");
+    }
+
+    @Test
+    void testPlayGameFiveRoomMaze() throws InterruptedException {
+        ExampleSubject game = new ExampleSubject();
+        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useGridLayoutStrategy()
+                .setDimension(1200)
+                .setRoomDimension(150)
+                .build();
+        game.attach(observer);
+        game.playGame(5, "fully");
+    }
+    @Test
+    void testPlayGame4x4RoomMaze() throws InterruptedException {
+        ExampleSubject game = new ExampleSubject();
+        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useGridLayoutStrategy()
+                .setDimension(1200)
+                .setRoomDimension(150)
+                .setDelayInSecondsAfterUpdate(1)
+                .build();
+        game.attach(observer);
+        game.playGame(16, "grid");
+    }
+    @Test
+    void testPlayGameFiveRoomRadialMaze() throws InterruptedException {
+        ExampleSubject game = new ExampleSubject();
+        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useRadialLayoutStrategy()
+                .setDimension(1200)
+                .setRoomDimension(200)
+                .build();
+        game.attach(observer);
+        game.playGame(5, "fully");
     }
 
 }
