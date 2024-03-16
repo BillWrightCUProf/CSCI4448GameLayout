@@ -16,7 +16,7 @@ public class MazeObserver implements IMazeObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
     JFrame window;
     GamePanel gamePanel;
-    GamePanel.RoomShape roomShape = GamePanel.RoomShape.CIRCLE;
+    RoomShape roomShape = RoomShape.IMAGE;
     IRoomLayoutStrategy layoutStrategy = new RadialLayoutStrategy();
     Integer dimension = 800;
     Integer roomDimension = 100;
@@ -58,13 +58,20 @@ public class MazeObserver implements IMazeObserver {
             return this;
         }
         public Builder useSquareRooms() {
-            mazeObserver.roomShape = GamePanel.RoomShape.SQUARE;
+            mazeObserver.roomShape = RoomShape.SQUARE;
             return this;
         }
         public Builder useCircleRooms() {
-            mazeObserver.roomShape = GamePanel.RoomShape.CIRCLE;
+            mazeObserver.roomShape = RoomShape.CIRCLE;
             return this;
         }
+
+        public Builder useImageRooms() {
+            mazeObserver.roomShape = RoomShape.IMAGE;
+            return this;
+        }
+
+
 
         public Builder setDelayInSecondsAfterUpdate(Integer delayInSeconds) {
             mazeObserver.delayInSecondsAfterDisplayUpdate = delayInSeconds;
@@ -81,7 +88,7 @@ public class MazeObserver implements IMazeObserver {
         if (gamePanel != null) {
             window.remove(gamePanel);
         }
-        gamePanel = new GamePanel(maze, statusMessage, layoutStrategy, GamePanel.RoomShape.CIRCLE, dimension, roomDimension);
+        gamePanel = new GamePanel(maze, statusMessage, layoutStrategy, roomShape, dimension, roomDimension);
 
         window.add(gamePanel);
         window.pack();

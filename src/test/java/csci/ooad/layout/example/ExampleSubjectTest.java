@@ -27,6 +27,7 @@ class ExampleSubjectTest {
         ExampleSubject game = new ExampleSubject();
         MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
                 .useCircleRooms()
+                .setDelayInSecondsAfterUpdate(2)
                 .useGridLayoutStrategy()
                 .build();
         game.attach(observer);
@@ -73,13 +74,14 @@ class ExampleSubjectTest {
     void testPlayGameFiveRoomRadialMaze() throws InterruptedException {
         ExampleSubject game = new ExampleSubject();
         MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
-                .useCircleRooms()
+                .useImageRooms()
                 .useRadialLayoutStrategy()
                 .setDimension(1200)
                 .setRoomDimension(200)
+                .setDelayInSecondsAfterUpdate(10)
                 .build();
         game.attach(observer);
-        game.playGame(5, "fully");
+        game.playGame(9, "fully");
     }
 
 }

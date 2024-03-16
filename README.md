@@ -23,6 +23,13 @@ I simplified things a bit and made them more complicated too:
 * Added a delay in the viewer -- seems better than building it into the game
 * Added more tests and fixed layout of rooms for all sizes and all layouts (grid and radial)
 
+### Version 1.4
+
+* Added a graphic image to represent the room. Here's an example:
+
+![MazeWithImageRooms.png](sampleLayouts%2FMazeWithImageRooms.png)
 
 ### TODO:
 * Add check for panels too large and rooms too large for the panel
+* Try to get the room images as circles, so that arrows end at the image boundary, though that will be less good for the text... maybe keep it as is.
+* Add more images for the rooms

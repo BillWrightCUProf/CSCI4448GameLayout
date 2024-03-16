@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.Map;
 
 public class GamePanel extends JPanel {
@@ -21,17 +22,12 @@ public class GamePanel extends JPanel {
     String statusMessage;
     Color BACKGROUND_COLOR = Color.YELLOW;
     Color ROOM_COLOR = Color.GREEN;
-    Color TEXT_COLOR = Color.BLACK;
+    Color TEXT_COLOR = Color.WHITE;
     Color CONNECTOR_COLOR = Color.BLUE;
 
     IMaze maze;
     IRoomLayoutStrategy roomLayoutStrategy;
     RoomShape roomShape;
-
-    public enum RoomShape {
-        CIRCLE,
-        SQUARE
-    }
 
     public GamePanel(IMaze maze, String statusMessage, IRoomLayoutStrategy layoutStrategy) {
         this(maze, statusMessage, layoutStrategy, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH);
@@ -65,25 +61,54 @@ public class GamePanel extends JPanel {
     void paintRoomCenteredAt(Graphics2D g2, Point roomCenter, String roomName) {
         g2.setColor(ROOM_COLOR);
         Point upperRightCorner = new Point(roomCenter.x - roomDimension / 2, roomCenter.y - roomDimension / 2);
-        if (roomShape.equals(RoomShape.SQUARE)) {
-            g2.fillRect(upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension);
-        } else {
-            g2.fillOval(upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension);
+        switch (roomShape) {
+            case SQUARE:
+                g2.fillRect(upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension);
+                break;
+            case CIRCLE:
+                g2.fillOval(upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension);
+                break;
+            case IMAGE:
+                paintImageCenteredAt(g2, upperRightCorner, roomName);
+                break;
         }
-        g2.setColor(TEXT_COLOR);
 
-        // Print the room name
-        g2.setFont(ROOM_NAME_FONT);
+        paintRoomName(g2, roomName, upperRightCorner);
+        paintRoomContents(g2, roomName, upperRightCorner);
+    }
+
+    private void paintRoomContents(Graphics2D g2, String roomName, Point upperRightCorner) {
         Integer fontHeight = g2.getFontMetrics().getHeight();
-        g2.drawString(roomName, upperRightCorner.x + 2, upperRightCorner.y + fontHeight);
-
-        // Now print the contents of the room
         Integer yPosition = upperRightCorner.y + fontHeight * 2 + 2;
         g2.setFont(ROOM_CONTENTS_FONT);
         for (String desc : maze.getContents(roomName)) {
             g2.drawString(desc, upperRightCorner.x + 5, yPosition);
             yPosition += fontHeight + 2;
         }
+    }
+
+    private Integer paintRoomName(Graphics2D g2, String roomName, Point upperRightCorner) {
+        g2.setColor(TEXT_COLOR);
+        g2.setFont(ROOM_NAME_FONT);
+        Integer fontHeight = g2.getFontMetrics().getHeight();
+        g2.drawString(roomName, upperRightCorner.x + 2, upperRightCorner.y + fontHeight);
+        return fontHeight;
+    }
+
+    void paintImageCenteredAt(Graphics2D g2, Point upperRightCorner, String roomName) {
+        // I want to draw a jpg image from my resources/images directory at the roomCenter
+        // I will use the ImageIO.read method to read the image from the file system
+        // I will then use the drawImage method to draw the image at the roomCenter
+        Image caveRoomImage = null;
+        try {
+            File file = new File("resources/images/cave1-small.jpg");
+            caveRoomImage = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/images/cave1-small.jpg"));
+        } catch (java.io.IOException e) {
+            logger.error("Error reading image file: " + e.getMessage());
+        }
+
+        // I want to scale the image to fit into a circular radius
+        g2.drawImage(caveRoomImage, upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension, this);
     }
 
     void paintMaze(Graphics2D g2, IMaze maze) {
@@ -118,12 +143,14 @@ public class GamePanel extends JPanel {
         Point roomBoundaryLocation = new Point((int)(roomLocation.x - deltaX), (int)(roomLocation.y - deltaY));
         Point neighborBoundaryLocation = new Point((int)(neighborLocation.x + deltaX), (int)(neighborLocation.y + deltaY));
 
-        // Draw the connecting line
+        Stroke oldStroke = g2.getStroke();
+        g2.setStroke(new BasicStroke(3));
         g2.drawLine(roomBoundaryLocation.x, roomBoundaryLocation.y, neighborBoundaryLocation.x, neighborBoundaryLocation.y);
+        g2.setStroke(oldStroke);
 
         // Now draw the arrow indicating how the rooms are connected
         int headAngle = 60;
-        int headLength = 10;
+        int headLength = 20;
         double offs = headAngle * Math.PI / 180.0;
         int[] xs = {neighborBoundaryLocation.x + (int) (headLength * Math.cos(lineAngle + offs)), neighborBoundaryLocation.x,
                 neighborBoundaryLocation.x + (int) (headLength * Math.cos(lineAngle - offs))};
