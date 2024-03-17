@@ -22,6 +22,8 @@ public class MazeObserver implements IMazeObserver {
     Integer roomDimension = 100;
     Integer delayInSecondsAfterDisplayUpdate = 1;
 
+    ImageFactory imageFactory;
+
     public static Builder getNewBuilder(String title) {
         return new Builder(title);
     }
@@ -31,6 +33,7 @@ public class MazeObserver implements IMazeObserver {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(true);
         window.setLocationRelativeTo(null);
+        imageFactory = ImageFactory.getInstance();
     }
 
     public static class Builder {
@@ -71,8 +74,6 @@ public class MazeObserver implements IMazeObserver {
             return this;
         }
 
-
-
         public Builder setDelayInSecondsAfterUpdate(Integer delayInSeconds) {
             mazeObserver.delayInSecondsAfterDisplayUpdate = delayInSeconds;
             return this;
@@ -88,7 +89,7 @@ public class MazeObserver implements IMazeObserver {
         if (gamePanel != null) {
             window.remove(gamePanel);
         }
-        gamePanel = new GamePanel(maze, statusMessage, layoutStrategy, roomShape, dimension, roomDimension);
+        gamePanel = new GamePanel(maze, statusMessage, layoutStrategy, roomShape, dimension, roomDimension, imageFactory);
 
         window.add(gamePanel);
         window.pack();

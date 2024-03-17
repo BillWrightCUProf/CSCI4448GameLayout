@@ -29,11 +29,13 @@ public class GamePanel extends JPanel {
     IRoomLayoutStrategy roomLayoutStrategy;
     RoomShape roomShape;
 
-    public GamePanel(IMaze maze, String statusMessage, IRoomLayoutStrategy layoutStrategy) {
-        this(maze, statusMessage, layoutStrategy, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH);
+    ImageFactory imageFactory;
+
+    public GamePanel(IMaze maze, String statusMessage, IRoomLayoutStrategy layoutStrategy, ImageFactory imageFactory) {
+        this(maze, statusMessage, layoutStrategy, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH, imageFactory);
     }
 
-    public GamePanel(IMaze maze, String statusMessage, IRoomLayoutStrategy layoutStrategy, RoomShape roomShape, Integer panelDimension, Integer roomRadius) {
+    public GamePanel(IMaze maze, String statusMessage, IRoomLayoutStrategy layoutStrategy, RoomShape roomShape, Integer panelDimension, Integer roomRadius, ImageFactory imageFactory) {
         this.setPreferredSize(new Dimension(panelDimension, panelDimension));
         this.setBackground(BACKGROUND_COLOR);
         this.setDoubleBuffered(true);
@@ -42,6 +44,7 @@ public class GamePanel extends JPanel {
         this.roomShape = roomShape;
         this.roomDimension = roomRadius;
         this.statusMessage = statusMessage;
+        this.imageFactory = imageFactory;
     }
 
     public void paintComponent(Graphics g) {
@@ -96,18 +99,7 @@ public class GamePanel extends JPanel {
     }
 
     void paintImageCenteredAt(Graphics2D g2, Point upperRightCorner, String roomName) {
-        // I want to draw a jpg image from my resources/images directory at the roomCenter
-        // I will use the ImageIO.read method to read the image from the file system
-        // I will then use the drawImage method to draw the image at the roomCenter
-        Image caveRoomImage = null;
-        try {
-            File file = new File("resources/images/cave1-small.jpg");
-            caveRoomImage = javax.imageio.ImageIO.read(getClass().getResourceAsStream("/images/cave1-small.jpg"));
-        } catch (java.io.IOException e) {
-            logger.error("Error reading image file: " + e.getMessage());
-        }
-
-        // I want to scale the image to fit into a circular radius
+        Image caveRoomImage = ImageFactory.getInstance().getNextImage();
         g2.drawImage(caveRoomImage, upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension, this);
     }
 

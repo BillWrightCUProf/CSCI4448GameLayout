@@ -29,7 +29,12 @@ I simplified things a bit and made them more complicated too:
 
 ![MazeWithImageRooms.png](sampleLayouts%2FMazeWithImageRooms.png)
 
+### Version 1.5
+
+* Added more images for the rooms and each is used in a rotation
+
+
 ### TODO:
 * Add check for panels too large and rooms too large for the panel
 * Try to get the room images as circles, so that arrows end at the image boundary, though that will be less good for the text... maybe keep it as is.
-* Add more images for the rooms
+* Make the images for the rooms persistent. Now they change on every update of the Maze
