@@ -27,11 +27,14 @@ I simplified things a bit and made them more complicated too:
 
 * Added a graphic image to represent the room. Here's an example:
 
-![MazeWithImageRooms.png](sampleLayouts%2FMazeWithImageRooms.png)
+![MazeWithImageRooms.png](sampleLayouts%2FMazeWithImageRooms.png) 
+(I have a free account here)
 
 ### Version 1.5
 
 * Added more images for the rooms and each is used in a rotation
+* <a href="https://www.freepik.com/free-vector/underground-waterfall-cave-scenery-landscape-water-stream-fall-from-rocky-cliff-mountain-lake-falling-river-jet-cascade-pour-from-pond-with-stones-around-cartoon-vector-background_20514441.htm#from_view=detail_alsolike">Image by upklyak on Freepik</a>
+
 
 
 ### TODO:
