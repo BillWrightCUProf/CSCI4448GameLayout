@@ -1,11 +1,11 @@
 package csci.ooad.layout;
 
+import csci.ooad.layout.intf.IMaze;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.util.Map;
 
 public class GamePanel extends JPanel {

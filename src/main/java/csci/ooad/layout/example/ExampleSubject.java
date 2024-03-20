@@ -1,8 +1,10 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.*;
+import csci.ooad.layout.intf.IMaze;
+import csci.ooad.layout.intf.IMazeSubject;
+import csci.ooad.layout.intf.MazeObserver;
 
-class ExampleSubject implements IMazeSubject {
+public class ExampleSubject implements IMazeSubject {
 
     IMaze maze;
 

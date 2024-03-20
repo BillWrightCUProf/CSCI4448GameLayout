@@ -1,6 +1,7 @@
 package csci.ooad.layout;
 
 import csci.ooad.layout.example.ExampleMaze;
+import csci.ooad.layout.intf.MazeObserver;
 import org.junit.jupiter.api.Test;
 
 class MazeObserverTest {

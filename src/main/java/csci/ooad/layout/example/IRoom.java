@@ -1,4 +1,4 @@
-package csci.ooad.layout;
+package csci.ooad.layout.example;
 
 import java.util.List;
 
