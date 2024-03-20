@@ -1,6 +1,5 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.example.Room;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 

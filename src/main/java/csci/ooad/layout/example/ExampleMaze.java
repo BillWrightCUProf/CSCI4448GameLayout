@@ -1,9 +1,7 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.IMaze;
-import csci.ooad.layout.IRoom;
+import csci.ooad.layout.intf.IMaze;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

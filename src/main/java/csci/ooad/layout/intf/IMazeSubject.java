@@ -1,4 +1,4 @@
-package csci.ooad.layout;
+package csci.ooad.layout.intf;
 
 import java.util.ArrayList;
 import java.util.List;

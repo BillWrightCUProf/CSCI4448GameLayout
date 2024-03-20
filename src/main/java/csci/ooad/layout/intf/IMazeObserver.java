@@ -1,6 +1,4 @@
-package csci.ooad.layout;
-
-import java.util.List;
+package csci.ooad.layout.intf;
 
 public interface IMazeObserver {
     default void update(IMaze maze) {

@@ -1,7 +1,5 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.IRoom;
-
 import java.util.ArrayList;
 import java.util.List;
 

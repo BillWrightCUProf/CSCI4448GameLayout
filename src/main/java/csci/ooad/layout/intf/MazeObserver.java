@@ -1,5 +1,6 @@
-package csci.ooad.layout;
+package csci.ooad.layout.intf;
 
+import csci.ooad.layout.*;
 import csci.ooad.layout.example.ExampleMaze;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

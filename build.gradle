@@ -7,12 +7,11 @@ plugins {
     id 'signing'
 }
 
-//println("mavenCentralUsername: $mavenCentralUsername")
-//println("mavenCentralPassword: $mavenCentralPassword")
-
-group = 'io.github.billwrightcuprof'
-archivesBaseName = 'csci4448.gameLayout'
-version = '1.5.0'
+base {
+    group = 'io.github.billwrightcuprof'
+    archivesName = 'csci4448.gameLayout'
+    version = '1.6.0'
+}
 
 java {
     sourceCompatibility = 17
@@ -23,6 +22,18 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
 dependencies {
