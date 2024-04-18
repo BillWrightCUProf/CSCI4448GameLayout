@@ -2,12 +2,12 @@ package csci.ooad.layout;
 
 import java.awt.Point;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RadialLayoutStrategy implements IRoomLayoutStrategy {
     @Override
-    public Map<String, Point> calculateRoomLocations(List<String> roomNames, Integer panelWidth, Integer roomWidth) {
+    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer roomWidth) {
         Map<String, Point> roomLocations = new HashMap<>();
 
         Point center = new Point(panelWidth/2, panelWidth/2);

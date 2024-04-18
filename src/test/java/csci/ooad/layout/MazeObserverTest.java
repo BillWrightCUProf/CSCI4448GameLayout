@@ -28,13 +28,13 @@ class MazeObserverTest {
                 .useGridLayoutStrategy()
                 .build();
 
-        mazeObserver.update(ExampleMaze.createRoomGrid(2));
+        mazeObserver.update(ExampleMaze.createRoomGrid(4));
         mazeObserver.paintToFile("sampleLayouts/testFourRoomRadialLayout");
 
-        mazeObserver.update(ExampleMaze.createRoomGrid(3));
+        mazeObserver.update(ExampleMaze.createRoomGrid(9));
         mazeObserver.paintToFile("sampleLayouts/testNineRoomRadialLayout");
 
-        mazeObserver.update(ExampleMaze.createRoomGrid(4));
+        mazeObserver.update(ExampleMaze.createRoomGrid(16));
         mazeObserver.paintToFile("sampleLayouts/testSixteenRoomRadialLayout");
     }
 
