@@ -5,5 +5,7 @@ public interface IMazeObserver {
         update(maze, "");
     }
     void update(IMaze maze, String statusMessage);
-    void paintToFile(String filePath);
+    default void paintToFile(String filePath) {
+
+    };
 }

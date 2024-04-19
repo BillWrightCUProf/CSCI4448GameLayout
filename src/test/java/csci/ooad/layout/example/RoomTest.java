@@ -1,13 +1,13 @@
 package csci.ooad.layout.example;
 
 import org.junit.jupiter.api.Test;
-import java.util.List;
+import java.util.Set;
 
 class RoomTest {
 
     @Test
     void testOneRoomCreation() {
-        List<Room> rooms = Room.createRoomGrid(1);
+        Set<Room> rooms = Room.createRoomGrid(1);
         assert rooms.size() == 1;
     }
 }

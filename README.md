@@ -35,7 +35,9 @@ I simplified things a bit and made them more complicated too:
 * Added more images for the rooms and each is used in a rotation
 * <a href="https://www.freepik.com/free-vector/underground-waterfall-cave-scenery-landscape-water-stream-fall-from-rocky-cliff-mountain-lake-falling-river-jet-cascade-pour-from-pond-with-stones-around-cartoon-vector-background_20514441.htm#from_view=detail_alsolike">Image by upklyak on Freepik</a>
 
+### Version 1.7
 
+* Converted interface from Lists to Sets for the rooms and connections
 
 ### TODO:
 * Add check for panels too large and rooms too large for the panel

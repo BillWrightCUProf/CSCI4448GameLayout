@@ -14,6 +14,11 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class MazeObserver implements IMazeObserver {
+
+    static {
+        System.out.println("MazeObserver class is being loaded");
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
     JFrame window;
     GamePanel gamePanel;
@@ -29,7 +34,11 @@ public class MazeObserver implements IMazeObserver {
         return new Builder(title);
     }
 
-    private MazeObserver(String title) {
+    public MazeObserver() {
+        this("Arcane Adventure Game");
+    }
+
+    public MazeObserver(String title) {
         window = new JFrame(title);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(true);
@@ -37,8 +46,12 @@ public class MazeObserver implements IMazeObserver {
         imageFactory = ImageFactory.getInstance();
     }
 
-    public static class Builder {
+    public static class Builder implements IMazeObserverBuilder {
         MazeObserver mazeObserver;
+
+        public Builder() {
+            mazeObserver = new MazeObserver("Arcane Adventure Game");
+        }
 
         public Builder(String title) {
             mazeObserver = new MazeObserver(title);
@@ -53,18 +66,39 @@ public class MazeObserver implements IMazeObserver {
             mazeObserver.roomDimension = roomDimension;
             return this;
         }
+
+        @Override
+        public IMazeObserverBuilder setTitle(String title) {
+            mazeObserver.setTitle(title);
+            return this;
+        }
+
+        @Override
+        public IMazeObserverBuilder setLayoutStrategy(IRoomLayoutStrategy layoutStrategy) {
+            mazeObserver.layoutStrategy = layoutStrategy;
+            return this;
+        }
+
+        @Override
+        public IMazeObserverBuilder setRoomShape(RoomShape roomShape) {
+            return null;
+        }
+
         public Builder useRadialLayoutStrategy() {
             mazeObserver.layoutStrategy = new RadialLayoutStrategy();
             return this;
         }
+
         public Builder useGridLayoutStrategy() {
             mazeObserver.layoutStrategy = new GridLayoutStrategy();
             return this;
         }
+
         public Builder useSquareRooms() {
             mazeObserver.roomShape = RoomShape.SQUARE;
             return this;
         }
+
         public Builder useCircleRooms() {
             mazeObserver.roomShape = RoomShape.CIRCLE;
             return this;
@@ -83,6 +117,10 @@ public class MazeObserver implements IMazeObserver {
         public MazeObserver build() {
             return mazeObserver;
         }
+    }
+
+    void setTitle(String title) {
+        window.setTitle(title);
     }
 
     @Override

@@ -1,13 +1,15 @@
 package csci.ooad.layout.example;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 class Room implements IRoom {
     private final String name;
-    private final List<Room> neighbors;
+    private final Set<Room> neighbors;
 
-    public static List<Room> createRoomGrid(Integer dimension) {
+    public static Set<Room> createRoomGrid(Integer dimension) {
         List<Room> rooms = new ArrayList<>();
         for (Integer row = 0; row < dimension; row++) {
             for (Integer col = 0; col < dimension; col++) {
@@ -23,15 +25,15 @@ class Room implements IRoom {
                 rooms.get(i).addNeighbor(rooms.get(i + dimension));
             }
         }
-        return rooms;
+        return Set.copyOf(rooms);
     }
 
-    public static List<Room> createFullyConnectedRooms(Integer numRooms) {
+    public static Set<Room> createFullyConnectedRooms(Integer numRooms) {
         return createFullyConnectedRooms(numRooms, true);
     }
 
-    public static List<Room> createFullyConnectedRooms(Integer numRooms, Boolean twoWayConnections) {
-        List<Room> rooms = new ArrayList<>();
+    public static Set<Room> createFullyConnectedRooms(Integer numRooms, Boolean twoWayConnections) {
+        Set<Room> rooms = new HashSet<>();
         for (int i = 0; i < numRooms; i++) {
             Room currentRoom = new Room("Room " + i);
             for (Room otherRoom : rooms) {
@@ -48,7 +50,7 @@ class Room implements IRoom {
 
     public Room(String aName) {
         this.name = aName;
-        neighbors = new ArrayList<>();
+        neighbors = new HashSet<>();
     }
 
     public String toString() {
@@ -72,8 +74,8 @@ class Room implements IRoom {
         return name;
     }
 
-    public List<IRoom> getNeighbors() {
+    public Set<IRoom> getNeighbors() {
         // Don't just return the list, as it could be modified
-        return new ArrayList<>(neighbors);
+        return Set.copyOf(neighbors);
     }
 }

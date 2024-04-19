@@ -5,16 +5,17 @@ import csci.ooad.layout.intf.IMaze;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
  */
 public class ExampleMaze implements IMaze {
 
-    private List<Room> rooms;
+    private Set<Room> rooms;
     private Map<String, Room> roomMap = new HashMap<>();
 
-    private ExampleMaze(List<Room> rooms) {
+    private ExampleMaze(Set<Room> rooms) {
         this.rooms = rooms;
         for (Room room : rooms) {
             roomMap.put(room.getName(), room);
@@ -40,13 +41,13 @@ public class ExampleMaze implements IMaze {
     }
 
     @Override
-    public List<String> getRooms() {
-        return roomMap.keySet().stream().toList();
+    public Set<String> getRooms() {
+        return roomMap.keySet();
     }
 
     @Override
-    public List<String> getNeighborsOf(String room) {
-        return roomMap.get(room).getNeighbors().stream().map(IRoom::getName).toList();
+    public Set<String> getNeighborsOf(String room) {
+        return Set.copyOf(roomMap.get(room).getNeighbors().stream().map(IRoom::getName).toList());
     }
 
     @Override
