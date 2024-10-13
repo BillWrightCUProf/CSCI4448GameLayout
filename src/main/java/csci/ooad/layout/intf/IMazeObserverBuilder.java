@@ -1,7 +1,6 @@
 package csci.ooad.layout.intf;
 
 import csci.ooad.layout.IRoomLayoutStrategy;
-import csci.ooad.layout.RoomShape;
 
 public interface IMazeObserverBuilder {
     IMazeObserverBuilder setTitle(String title);

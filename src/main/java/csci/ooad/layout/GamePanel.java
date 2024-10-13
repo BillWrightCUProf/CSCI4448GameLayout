@@ -1,6 +1,7 @@
 package csci.ooad.layout;
 
 import csci.ooad.layout.intf.IMaze;
+import csci.ooad.layout.intf.RoomShape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,32 +20,43 @@ public class GamePanel extends JPanel {
     static Font STATUS_MESSAGE_FONT = new Font("Lucida Grande", Font.ITALIC, 15);
 
     Integer roomDimension;
-    String statusMessage;
-    Color BACKGROUND_COLOR = Color.YELLOW;
-    Color ROOM_COLOR = Color.GREEN;
-    Color TEXT_COLOR = Color.WHITE;
-    Color CONNECTOR_COLOR = Color.BLUE;
+    java.util.List<String> statusMessages;
+    static Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
+    static Color DEFAULT_ROOM_COLOR = Color.GREEN;
+    static Color DEFAULT_TEXT_COLOR = Color.WHITE;
+    static Color CONNECTOR_COLOR = Color.BLUE;
 
     IMaze maze;
-    IRoomLayoutStrategy roomLayoutStrategy;
+    Map<String, Point> roomLocations;
+    Map<String, Image> roomImages;
+
     RoomShape roomShape;
+    Color roomBackgroundColor = DEFAULT_ROOM_COLOR;
+    Color textColor = DEFAULT_TEXT_COLOR;
 
-    ImageFactory imageFactory;
 
-    public GamePanel(IMaze maze, String statusMessage, IRoomLayoutStrategy layoutStrategy, ImageFactory imageFactory) {
-        this(maze, statusMessage, layoutStrategy, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH, imageFactory);
+    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, java.util.List<String> statusMessages) {
+        this(maze, roomLocations, roomImages, statusMessages, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH);
     }
 
-    public GamePanel(IMaze maze, String statusMessage, IRoomLayoutStrategy layoutStrategy, RoomShape roomShape, Integer panelDimension, Integer roomRadius, ImageFactory imageFactory) {
+    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, java.util.List<String> statusMessages, RoomShape roomShape, Integer panelDimension, Integer roomRadius) {
         this.setPreferredSize(new Dimension(panelDimension, panelDimension));
-        this.setBackground(BACKGROUND_COLOR);
+        this.setBackground(DEFAULT_BACKGROUND_COLOR);
         this.setDoubleBuffered(true);
         this.maze = maze;
-        this.roomLayoutStrategy = layoutStrategy;
+        this.roomLocations = roomLocations;
+        this.roomImages = roomImages;
         this.roomShape = roomShape;
         this.roomDimension = roomRadius;
-        this.statusMessage = statusMessage;
-        this.imageFactory = imageFactory;
+        this.statusMessages = statusMessages;
+    }
+
+    public void setRoomBackground(Color color) {
+        roomBackgroundColor = color;
+    }
+
+    public void setTextColor(Color color) {
+        textColor = color;
     }
 
     public void paintComponent(Graphics g) {
@@ -52,17 +64,23 @@ public class GamePanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         logger.debug("In paintComponent. Width of parent is: " + this.getParent().getWidth());
         paintStatusMessage(g2);
-        paintMaze(g2, maze);
+        paintMaze(g2);
     }
 
     private void paintStatusMessage(Graphics2D g2) {
         g2.setFont(STATUS_MESSAGE_FONT);
-        Integer centerRight = this.getParent().getWidth() / 4;
-        g2.drawString(statusMessage, centerRight, 20);
+        g2.setColor(textColor);
+        Integer fontHeight = g2.getFontMetrics().getHeight();
+        Integer centerLeft = 20;
+        Integer yPosition = 20;
+        for (String statusMessage : statusMessages) {
+            g2.drawString(statusMessage, centerLeft, yPosition);
+            yPosition += fontHeight + 2;
+        }
     }
 
     void paintRoomCenteredAt(Graphics2D g2, Point roomCenter, String roomName) {
-        g2.setColor(ROOM_COLOR);
+        g2.setColor(roomBackgroundColor);
         Point upperRightCorner = new Point(roomCenter.x - roomDimension / 2, roomCenter.y - roomDimension / 2);
         switch (roomShape) {
             case SQUARE:
@@ -91,7 +109,7 @@ public class GamePanel extends JPanel {
     }
 
     private Integer paintRoomName(Graphics2D g2, String roomName, Point upperRightCorner) {
-        g2.setColor(TEXT_COLOR);
+        g2.setColor(textColor);
         g2.setFont(ROOM_NAME_FONT);
         Integer fontHeight = g2.getFontMetrics().getHeight();
         g2.drawString(roomName, upperRightCorner.x + 2, upperRightCorner.y + fontHeight);
@@ -99,34 +117,35 @@ public class GamePanel extends JPanel {
     }
 
     void paintImageCenteredAt(Graphics2D g2, Point upperRightCorner, String roomName) {
-        Image caveRoomImage = ImageFactory.getInstance().getNextImage();
+        Image caveRoomImage = roomImages.get(roomName);
         g2.drawImage(caveRoomImage, upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension, this);
     }
 
-    void paintMaze(Graphics2D g2, IMaze maze) {
-        Integer currentWindowWidth = this.getParent().getWidth();
-
-        Map<String, Point> roomLocations = roomLayoutStrategy.calculateRoomLocations(
-                maze.getRooms(), currentWindowWidth, roomDimension);
-
-        for (String currentRoom : maze.getRooms()) {
+    void paintMaze(Graphics2D g2) {
+        drawRoomConnections(g2);
+        for (String currentRoom : roomLocations.keySet()) {
             paintRoomCenteredAt(g2, roomLocations.get(currentRoom), currentRoom);
         }
-        drawRoomConnections(g2, maze, roomLocations);
     }
 
-    private void drawRoomConnections(Graphics2D g2, IMaze maze, Map<String, Point> roomLocations) {
+    private void drawRoomConnections(Graphics2D g2) {
         g2.setColor(CONNECTOR_COLOR);
         for (String currentRoom : maze.getRooms()) {
             for (String neighbor : maze.getNeighborsOf(currentRoom)) {
                 Point roomLocation = roomLocations.get(currentRoom);
                 Point neighborLocation = roomLocations.get(neighbor);
+                if (neighborLocation == null) {
+                    continue;
+                }
                 drawArrow(g2, roomLocation, neighborLocation);
             }
         }
     }
 
     public void drawArrow(Graphics2D g2, Point roomLocation, Point neighborLocation) {
+        if (neighborLocation == null || roomLocation == null) {
+            return;
+        }
         double lineAngle = Math.atan2(roomLocation.y - neighborLocation.y, roomLocation.x - neighborLocation.x);
 
         // Adjust the starting and ending points of the line to end at the room boundary and not the center

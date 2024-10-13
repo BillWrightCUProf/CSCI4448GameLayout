@@ -13,6 +13,11 @@ public interface IMazeSubject {
             observer.update(getMaze(), statusMessage);
         }
     }
+    default void notifyObservers(List<String> statusMessages) {
+        for (IMazeObserver observer : observers) {
+            observer.update(getMaze(), statusMessages);
+        }
+    }
 
     IMaze getMaze();
 }

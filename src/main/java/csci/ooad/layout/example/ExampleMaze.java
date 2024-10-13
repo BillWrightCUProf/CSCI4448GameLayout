@@ -52,6 +52,9 @@ public class ExampleMaze implements IMaze {
 
     @Override
     public List<String> getContents(String room) {
+        if (!roomMap.containsKey(room)) {
+            return null;
+        }
         return roomMap.get(room).getContents();
     }
 }

@@ -39,6 +39,15 @@ I simplified things a bit and made them more complicated too:
 
 * Converted interface from Lists to Sets for the rooms and connections
 
+### Version 1.8
+
+* Converted images to circles so that the connections line up better with the edges.
+* Added the capability to set the background, room, and text colors in the builder.
+* Removed references to Arcane game, as this is not tied to any specific game.
+* Expanded the status message to be a list of strings
+
+![testGrid16RoomLayout.grid.png](sampleLayouts/testGrid16RoomLayout.grid.png)
+
 ### TODO:
 * Add check for panels too large and rooms too large for the panel
 * Try to get the room images as circles, so that arrows end at the image boundary, though that will be less good for the text... maybe keep it as is.

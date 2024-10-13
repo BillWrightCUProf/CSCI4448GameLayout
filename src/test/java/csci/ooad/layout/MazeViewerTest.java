@@ -7,11 +7,11 @@ public class MazeViewerTest {
     @Test
     void testViewingSimpleMaze() {
 //        MazeObserver mazeObserver = new MazeObserver(
-//                "Arcane Adventure Game",
+//                "Adventure Game",
 //                new RadialLayoutStrategy());
 
-        // Arcane has to implement the Observer pattern
-//        MazeSubject mazeSubject = new Arcane();
+        // The observed game has to implement the Observer pattern
+//        MazeSubject mazeSubject = new ObservedGame();
 //        mazeSubject.attachObserver(mazeObserver);
 //
 //        mazeSubject.notify("turn ended");

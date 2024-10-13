@@ -29,11 +29,16 @@ public class ImageFactory {
     }
 
     private void loadImages() {
-        loadImage("cave-crystal.jpg");
-        loadImage("cave-stalactite.jpg");
-        loadImage("cave-fountain.jpg");
-        loadImage("cave-lava.jpg");
-        loadImage("cave-swamp.jpg");
+        loadImage("cave-crystal-circle.png");
+        loadImage("cave-stalactite-circle.png");
+        loadImage("cave-fountain-circle.png");
+        loadImage("cave-lava-circle.png");
+        loadImage("cave-swamp-circle.png");
+//        loadImage("cave-crystal.jpg");
+//        loadImage("cave-stalactite.jpg");
+//        loadImage("cave-fountain.jpg");
+//        loadImage("cave-lava.jpg");
+//        loadImage("cave-swamp.jpg");
         logger.debug("images loaded...");
     }
 
