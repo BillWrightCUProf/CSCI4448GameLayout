@@ -100,8 +100,8 @@ publishing {
     repositories {
         maven {
 //            credentials {
-//                username = mavenCentralUsername
-//                password = mavenCentralPassword
+//                username = System.getenv("mavenCentralUsername")
+//                password = System.getenv("mavenCentralPassword")
 //            }
 
             def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
