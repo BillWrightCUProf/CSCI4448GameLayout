@@ -186,7 +186,7 @@ public class MazeObserver implements IMazeObserver {
     private void setRoomImages(IMaze maze) {
         if (roomImages.isEmpty() && roomShape == RoomShape.IMAGE) {
             for (String room : maze.getRooms()) {
-                roomImages.put(room, imageFactory.getNextImage());
+                roomImages.put(room, imageFactory.getNextImage(room));
             }
         }
     }

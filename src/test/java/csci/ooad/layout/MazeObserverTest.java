@@ -104,7 +104,6 @@ class MazeObserverTest {
     void testFullyConnectedRoomsWithCircularLayout() {
         MazeObserver mazeObserver = MazeObserver.getNewBuilder("Polymorphia")
                 .useRadialLayoutStrategy()
-                .useCircleRooms()
                 .useImageRooms()
                 .setRoomDimension(200)
                 .setDimension(1200)

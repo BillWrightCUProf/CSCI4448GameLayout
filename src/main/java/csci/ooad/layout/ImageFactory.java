@@ -5,13 +5,17 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.Image;
-import java.util.ArrayList;
+import java.net.URL;
+import java.util.HashMap;
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 public class ImageFactory {
     private static final Logger logger = LoggerFactory.getLogger(ImageFactory.class);
 
-    private List<Image> images = new ArrayList<>();
+    private final Map<String, Image> images = new HashMap<>();
     private int index = 0;
 
     private static ImageFactory instance;
@@ -19,7 +23,12 @@ public class ImageFactory {
     public static ImageFactory getInstance() {
         if (instance == null) {
             instance = new ImageFactory();
-            instance.loadImages();
+            try {
+                instance.loadImages();
+            } catch (URISyntaxException e) {
+                logger.warn("Could not load images", e);
+                return null;
+            }
             logger.debug("ImageFactory instance created");
         }
         return instance;
@@ -28,30 +37,48 @@ public class ImageFactory {
     private ImageFactory() {
     }
 
-    private void loadImages() {
-        loadImage("cave-crystal-circle.png");
-        loadImage("cave-stalactite-circle.png");
-        loadImage("cave-fountain-circle.png");
-        loadImage("cave-lava-circle.png");
-        loadImage("cave-swamp-circle.png");
-//        loadImage("cave-crystal.jpg");
-//        loadImage("cave-stalactite.jpg");
-//        loadImage("cave-fountain.jpg");
-//        loadImage("cave-lava.jpg");
-//        loadImage("cave-swamp.jpg");
-        logger.debug("images loaded...");
-    }
+    private void loadImages() throws URISyntaxException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resourcePath = classLoader.getResource("images/");
 
-    private void loadImage(String fileName) {
-        try {
-            images.add(ImageIO.read(getClass().getResourceAsStream("/images/" + fileName)));
-        } catch (java.io.IOException e) {
-            logger.warn("Could not load image: " + fileName, e);
+        if (resourcePath != null) {
+            File imageFolder = new File(resourcePath.toURI());
+            File[] imageFiles = imageFolder.listFiles(
+                    file -> file.isFile() && file.getName().endsWith(".png")
+            );
+
+            for (File imageFile : imageFiles) {
+                loadImage(imageFile);
+            }
+        } else {
+            System.err.println("Resource path 'images/' not found.");
         }
     }
 
-    public Image getNextImage() {
-        index = (index + 1) % images.size();
-        return images.get(index);
+    private void loadImage(File imageFile) {
+        try {
+            images.put(imageFile.getName(), ImageIO.read(imageFile));
+        } catch (java.io.IOException e) {
+            logger.warn("Could not load image: {}", imageFile.getName(), e);
+        }
+    }
+
+    public String getBestImageNameMatch(String roomName) {
+        for (String imageName : images.keySet()) {
+            if (roomName.toLowerCase().contains(imageName.toLowerCase().split("-")[0])) {
+                return imageName;
+            }
+        }
+        return null;
+    }
+
+    public Image getNextImage(String roomName) {
+        String imageName = getBestImageNameMatch(roomName);
+        if (imageName == null) {
+            List<String> keys = images.keySet().stream().toList();
+            index = (index + 1) % images.size();
+            imageName = keys.get(index);
+        }
+        return images.get(imageName);
     }
 }

@@ -6,14 +6,23 @@ import java.util.List;
 import java.util.Set;
 
 class Room implements IRoom {
+    public static String[] NAMES = new String[]{
+            "Rivendell", "Mordor", "BagEnd", "Swamp", "Crystal Palace", "Pool of Lava",
+            "Stalactite Cave", "Goblin's Fountain", "Dragon's Den", "Troll Bridge",
+            "Dungeon", "Pit of Despair", "Sanctuary",
+            "Den of Souls", "Map Room", "Fangorn Forest", "Room of Horrors"
+    };
+
     private final String name;
     private final Set<Room> neighbors;
 
     public static Set<Room> createRoomGrid(Integer dimension) {
         List<Room> rooms = new ArrayList<>();
+        int roomNameIndex = 0;
         for (Integer row = 0; row < dimension; row++) {
             for (Integer col = 0; col < dimension; col++) {
-                Room currentRoom = new Room("Room R" + row + "C" + col);
+                Room currentRoom = new Room(NAMES[roomNameIndex % NAMES.length]);
+                roomNameIndex++;
                 rooms.add(currentRoom);
             }
         }
@@ -35,7 +44,7 @@ class Room implements IRoom {
     public static Set<Room> createFullyConnectedRooms(Integer numRooms, Boolean twoWayConnections) {
         Set<Room> rooms = new HashSet<>();
         for (int i = 0; i < numRooms; i++) {
-            Room currentRoom = new Room("Room " + i);
+            Room currentRoom = new Room(NAMES[i % NAMES.length]);
             for (Room otherRoom : rooms) {
                 if (twoWayConnections) {
                     currentRoom.connect(otherRoom);

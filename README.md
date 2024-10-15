@@ -46,6 +46,12 @@ I simplified things a bit and made them more complicated too:
 * Removed references to Arcane game, as this is not tied to any specific game.
 * Expanded the status message to be a list of strings
 
+### Version 1.9
+
+* Added more room images and the code tries to match room names to image names
+* Code automatically searches resources/images for room images, making it easy to add more images
+
+
 ![testGrid16RoomLayout.grid.png](sampleLayouts/testGrid16RoomLayout.grid.png)
 
 ### TODO:
