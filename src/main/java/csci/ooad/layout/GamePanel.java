@@ -17,10 +17,8 @@ public class GamePanel extends JPanel {
 
     static Font ROOM_NAME_FONT = new Font("Lucida Grande", Font.BOLD, 13);
     static Font ROOM_CONTENTS_FONT = new Font("Lucida Grande", Font.ITALIC, 13);
-    static Font STATUS_MESSAGE_FONT = new Font("Lucida Grande", Font.ITALIC, 15);
 
     Integer roomDimension;
-    java.util.List<String> statusMessages;
     static Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
     static Color DEFAULT_ROOM_COLOR = Color.GREEN;
     static Color DEFAULT_TEXT_COLOR = Color.WHITE;
@@ -35,11 +33,11 @@ public class GamePanel extends JPanel {
     Color textColor = DEFAULT_TEXT_COLOR;
 
 
-    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, java.util.List<String> statusMessages) {
-        this(maze, roomLocations, roomImages, statusMessages, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH);
+    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages) {
+        this(maze, roomLocations, roomImages, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH);
     }
 
-    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, java.util.List<String> statusMessages, RoomShape roomShape, Integer panelDimension, Integer roomRadius) {
+    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, RoomShape roomShape, Integer panelDimension, Integer roomRadius) {
         this.setPreferredSize(new Dimension(panelDimension, panelDimension));
         this.setBackground(DEFAULT_BACKGROUND_COLOR);
         this.setDoubleBuffered(true);
@@ -48,7 +46,6 @@ public class GamePanel extends JPanel {
         this.roomImages = roomImages;
         this.roomShape = roomShape;
         this.roomDimension = roomRadius;
-        this.statusMessages = statusMessages;
     }
 
     public void setRoomBackground(Color color) {
@@ -62,21 +59,8 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        logger.debug("In paintComponent. Width of parent is: " + this.getParent().getWidth());
-        paintStatusMessage(g2);
+        logger.debug("In paintComponent. Width of parent is: {}", this.getParent().getWidth());
         paintMaze(g2);
-    }
-
-    private void paintStatusMessage(Graphics2D g2) {
-        g2.setFont(STATUS_MESSAGE_FONT);
-        g2.setColor(textColor);
-        Integer fontHeight = g2.getFontMetrics().getHeight();
-        Integer centerLeft = 20;
-        Integer yPosition = 20;
-        for (String statusMessage : statusMessages) {
-            g2.drawString(statusMessage, centerLeft, yPosition);
-            yPosition += fontHeight + 2;
-        }
     }
 
     void paintRoomCenteredAt(Graphics2D g2, Point roomCenter, String roomName) {

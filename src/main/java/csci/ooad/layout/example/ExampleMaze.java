@@ -12,8 +12,8 @@ import java.util.Set;
  */
 public class ExampleMaze implements IMaze {
 
-    private Set<Room> rooms;
-    private Map<String, Room> roomMap = new HashMap<>();
+    private final Set<Room> rooms;
+    private final Map<String, Room> roomMap = new HashMap<>();
 
     private ExampleMaze(Set<Room> rooms) {
         this.rooms = rooms;

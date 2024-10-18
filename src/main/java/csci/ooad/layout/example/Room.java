@@ -7,10 +7,10 @@ import java.util.Set;
 
 class Room implements IRoom {
     public static String[] NAMES = new String[]{
-            "Rivendell", "Mordor", "BagEnd", "Swamp", "Crystal Palace", "Pool of Lava",
+            "Rivendell", "Mordor", "Test", "BagEnd", "Fangorn-Forest", "Swamp", "Crystal Palace", "Pool of Lava",
             "Stalactite Cave", "Goblin's Fountain", "Dragon's Den", "Troll Bridge",
             "Dungeon", "Pit of Despair", "Sanctuary",
-            "Den of Souls", "Map Room", "Fangorn Forest", "Room of Horrors"
+            "Den of Souls", "Map Room", "Room of Horrors"
     };
 
     private final String name;

@@ -1,7 +1,6 @@
 package csci.ooad.layout.intf;
 
 import csci.ooad.layout.*;
-import csci.ooad.layout.example.ExampleMaze;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +11,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class MazeObserver implements IMazeObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
@@ -25,6 +24,9 @@ public class MazeObserver implements IMazeObserver {
 
     JFrame window;
     GamePanel gamePanel;
+    StatusPanel statusPanel = new StatusPanel(Collections.EMPTY_LIST);
+    JPanel mainPanel = new JPanel(new GridLayout(2, 1));
+
     RoomShape roomShape = RoomShape.IMAGE;
     IRoomLayoutStrategy layoutStrategy = new RadialLayoutStrategy();
     Integer dimension = 800;
@@ -48,8 +50,11 @@ public class MazeObserver implements IMazeObserver {
     public MazeObserver(String title) {
         window = new JFrame(title);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setResizable(true);
+        window.setResizable(false);
         window.setLocationRelativeTo(null);
+        statusPanel.setPreferredSize(new Dimension(window.getWidth(), 100));
+        mainPanel.add(statusPanel, BorderLayout.NORTH);
+//        window.add(mainPanel);
         imageFactory = ImageFactory.getInstance();
     }
 
@@ -112,6 +117,11 @@ public class MazeObserver implements IMazeObserver {
             return this;
         }
 
+        public Builder useInLineLayoutStrategy() {
+            mazeObserver.layoutStrategy = new LineLayoutStrategy();
+            return this;
+        }
+
         public Builder useSquareRooms() {
             mazeObserver.roomShape = RoomShape.SQUARE;
             return this;
@@ -148,13 +158,22 @@ public class MazeObserver implements IMazeObserver {
 
     @Override
     public void update(IMaze maze, java.util.List<String> statusMessages) {
+        // TODO: Figure out why I have to remove this component and add it again. Why can't I just
+        // update the status message? When I try that it doesn't display at all. I can't just do this:
+        //  statusPanel.setStatus(statusMessages);
+        if (statusPanel != null) {
+            window.remove(statusPanel);
+        }
+        statusPanel = new StatusPanel(statusMessages);
+        window.add(statusPanel, BorderLayout.NORTH);
+
         setRoomLocations(maze);
         setRoomImages(maze);
 
         if (gamePanel != null) {
             window.remove(gamePanel);
         }
-        gamePanel = new GamePanel(maze, roomLocations, roomImages, statusMessages, roomShape, dimension, roomDimension);
+        gamePanel = new GamePanel(maze, roomLocations, roomImages, roomShape, dimension, roomDimension);
 
         if (backgroundColor != null) {
             gamePanel.setBackground(backgroundColor);
@@ -166,7 +185,7 @@ public class MazeObserver implements IMazeObserver {
             gamePanel.setTextColor(textColor);
         }
 
-        window.add(gamePanel);
+        window.add(gamePanel, BorderLayout.CENTER);
         window.pack();
         window.setVisible(true);
         try {
@@ -208,11 +227,28 @@ public class MazeObserver implements IMazeObserver {
         }
     }
 
-    public static void main(String[] args) {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .build();
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame("Example");
+//        StatusPanel statusPanel = new StatusPanel();
+//        StatusPanel statusPanel2 = new StatusPanel();
+//
+//        // Add the panel to the frame
+//        frame.setSize(500, 800);
+//        frame.add(statusPanel);
+////        frame.add(new GamePanel());
+//
+//        // Set frame properties
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setLocationRelativeTo(null);
+////        frame.pack();
+//        frame.setVisible(true);
+//
+//        try {
+//            Thread.sleep(3 * 1000);
+//            statusPanel.setStatus(Arrays.asList("new message 1", "new message two"));
+//        } catch (InterruptedException ex) {
+//            logger.warn("Display was interrupted...");
+//        }
+//    }
 
-        mazeObserver.update(ExampleMaze.createRoomGrid(2), "Created 2x2 Maze");
-    }
 }

@@ -49,10 +49,15 @@ I simplified things a bit and made them more complicated too:
 ### Version 1.9
 
 * Added more room images and the code tries to match room names to image names
+
+### Version 1.10
 * Code automatically searches resources/images for room images, making it easy to add more images
+* Add inline layout
+* Added separate panel for status above the maze layout so that it can't interfere with the maze 
+* Added ability for clients to add their own custom images for the maze.
 
+![FullyConnected16RoomLayout.grid.png](sampleLayouts/FullyConnected16RoomLayout.grid.png)
 
-![testGrid16RoomLayout.grid.png](sampleLayouts/testGrid16RoomLayout.grid.png)
 
 ### TODO:
 * Add check for panels too large and rooms too large for the panel

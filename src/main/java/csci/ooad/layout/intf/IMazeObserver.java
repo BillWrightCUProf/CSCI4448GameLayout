@@ -1,6 +1,7 @@
 package csci.ooad.layout.intf;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public interface IMazeObserver {
@@ -8,10 +9,10 @@ public interface IMazeObserver {
         update(maze, "");
     }
     default void update(IMaze maze, String statusMessages) {
-        update(maze, Arrays.asList(statusMessages));
+        update(maze, Collections.singletonList(statusMessages));
     }
     void update(IMaze maze, List<String> statusMessages);
 
     default void paintToFile(String filePath) {
-    };
+    }
 }
