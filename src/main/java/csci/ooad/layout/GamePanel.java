@@ -12,8 +12,6 @@ import java.util.Map;
 public class GamePanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(GamePanel.class);
 
-    static final Integer DEFAULT_WIDTH = 800;
-    static final Integer DEFAULT_ROOM_WIDTH = 100;
 
     static Font ROOM_NAME_FONT = new Font("Lucida Grande", Font.BOLD, 13);
     static Font ROOM_CONTENTS_FONT = new Font("Lucida Grande", Font.ITALIC, 13);
@@ -33,12 +31,8 @@ public class GamePanel extends JPanel {
     Color textColor = DEFAULT_TEXT_COLOR;
 
 
-    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages) {
-        this(maze, roomLocations, roomImages, RoomShape.CIRCLE, DEFAULT_WIDTH, DEFAULT_ROOM_WIDTH);
-    }
-
-    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, RoomShape roomShape, Integer panelDimension, Integer roomRadius) {
-        this.setPreferredSize(new Dimension(panelDimension, panelDimension));
+    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, RoomShape roomShape, Integer width, Integer height, Integer roomRadius) {
+        this.setPreferredSize(new Dimension(width, height));
         this.setBackground(DEFAULT_BACKGROUND_COLOR);
         this.setDoubleBuffered(true);
         this.maze = maze;

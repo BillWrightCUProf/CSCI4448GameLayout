@@ -190,11 +190,15 @@ class MazeObserverTest {
     void testFullyConnectedRoomsWithCircularLayout() {
         MazeObserver mazeObserver = MazeObserver.getNewBuilder("Polymorphia")
                 .useRadialLayoutStrategy()
-                .useGridLayoutStrategy()
+//                .useGridLayoutStrategy()
+//                .useInLineLayoutStrategy()
                 .useImageRooms()
                 .setDelayInSecondsAfterUpdate(5)
-                .setRoomDimension(200)
+//                .setRoomDimension(150)
                 .setDimension(1500)
+//                .setWidth(2000)
+//                .setHeight(1200)
+                .setRatioOfSpacingToRoomWidth(0.7)
                 .build();
 
         // This was only for local testing, as the test file won't exist on the CI machine

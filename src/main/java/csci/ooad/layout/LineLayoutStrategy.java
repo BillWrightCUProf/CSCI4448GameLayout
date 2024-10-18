@@ -8,7 +8,7 @@ import java.util.Set;
 public class LineLayoutStrategy implements IRoomLayoutStrategy {
 
     @Override
-    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer roomWidth) {
+    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
         // Layout appears like this
         // --------------------------------------
         //|                                     |
@@ -23,12 +23,12 @@ public class LineLayoutStrategy implements IRoomLayoutStrategy {
         Map<String, Point> roomLocations = new HashMap<>();
 
         // First location in the middle of the screen on the far left
-        Point currentLocation = new Point(roomWidth / 2, panelWidth / 2);
+        Point currentLocation = new Point(roomWidth / 2, panelHeight / 2);
         Integer rowSpacing = (panelWidth - roomWidth) / (roomNames.size() - 1);
 
         for (String currentRoomName : roomNames) {
             roomLocations.put(currentRoomName, currentLocation);
-            currentLocation = new Point(currentLocation.x + rowSpacing, panelWidth / 2);
+            currentLocation = new Point(currentLocation.x + rowSpacing, panelHeight / 2);
         }
 
         return roomLocations;

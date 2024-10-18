@@ -56,6 +56,10 @@ I simplified things a bit and made them more complicated too:
 * Added separate panel for status above the maze layout so that it can't interfere with the maze 
 * Added ability for clients to add their own custom images for the maze.
 
+### Version 1.11
+* Added ability to set height and width of maze separately
+* If room size isn't specified, it is calculate to make rooms as big as possible
+
 ![FullyConnected16RoomLayout.grid.png](sampleLayouts/FullyConnected16RoomLayout.grid.png)
 
 

@@ -7,12 +7,12 @@ import java.util.Set;
 
 public class RadialLayoutStrategy implements IRoomLayoutStrategy {
     @Override
-    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer roomWidth) {
+    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
         Map<String, Point> roomLocations = new HashMap<>();
 
         Point center = new Point(panelWidth/2, panelWidth/2);
 
-        Integer layoutRadius = panelWidth / 2 - roomWidth;
+        Integer layoutRadius = panelWidth / 2 - (roomWidth/2);
         Double radialInterval = 2 * Math.PI / roomNames.size();
         Double currentAngle = 0.0;
         for (String currentRoomName : roomNames) {

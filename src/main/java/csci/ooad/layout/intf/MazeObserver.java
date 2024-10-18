@@ -30,7 +30,10 @@ public class MazeObserver implements IMazeObserver {
     RoomShape roomShape = RoomShape.IMAGE;
     IRoomLayoutStrategy layoutStrategy = new RadialLayoutStrategy();
     Integer dimension = 800;
-    Integer roomDimension = 100;
+    Integer width = 800;
+    Integer height = 800;
+    Integer roomWidth;
+    Double ratioOfSpacingToRoomWidth= 1.0;
     Integer delayInSecondsAfterDisplayUpdate = 1;
     Color backgroundColor;
     Color roomBackgroundColor;
@@ -70,7 +73,18 @@ public class MazeObserver implements IMazeObserver {
         }
 
         public Builder setDimension(Integer dimension) {
-            mazeObserver.dimension = dimension;
+            mazeObserver.width = dimension;
+            mazeObserver.height = dimension;
+            return this;
+        }
+
+        public Builder setWidth(Integer width) {
+            mazeObserver.width = width;
+            return this;
+        }
+
+        public Builder setHeight(Integer height) {
+            mazeObserver.height = height;
             return this;
         }
 
@@ -85,7 +99,12 @@ public class MazeObserver implements IMazeObserver {
         }
 
         public Builder setRoomDimension(Integer roomDimension) {
-            mazeObserver.roomDimension = roomDimension;
+            mazeObserver.roomWidth = roomDimension;
+            return this;
+        }
+
+        public Builder setRatioOfSpacingToRoomWidth(Double ratioOfSpacingToRoomWidth) {
+            mazeObserver.ratioOfSpacingToRoomWidth = ratioOfSpacingToRoomWidth;
             return this;
         }
 
@@ -150,6 +169,7 @@ public class MazeObserver implements IMazeObserver {
         public MazeObserver build() {
             return mazeObserver;
         }
+
     }
 
     void setTitle(String title) {
@@ -173,7 +193,7 @@ public class MazeObserver implements IMazeObserver {
         if (gamePanel != null) {
             window.remove(gamePanel);
         }
-        gamePanel = new GamePanel(maze, roomLocations, roomImages, roomShape, dimension, roomDimension);
+        gamePanel = new GamePanel(maze, roomLocations, roomImages, roomShape, width, height, roomWidth);
 
         if (backgroundColor != null) {
             gamePanel.setBackground(backgroundColor);
@@ -197,8 +217,18 @@ public class MazeObserver implements IMazeObserver {
 
     private void setRoomLocations(IMaze maze) {
         if (roomLocations.isEmpty()) {
+            if (roomWidth == null) {
+                // We pick the room width so that the distance between the rooms is spacing-to-room-width-ratio times the room width
+                // If spacing-to-room-width-ratio = 1.5, then:
+                // panelWidth = roomWidth*numRooms + (roomWidth*1.5)*(numRooms-1)
+                // or, panelWidth = rW*nR + 1.5 * rW *nR - 1.5*rW*nR
+                // roomWidth = panelWidth/(n + 1.5(n-1))
+                // roomWidth = panelWidth/(2.5n - 1.5)
+                roomWidth = Math.toIntExact(Math.round(width / (((ratioOfSpacingToRoomWidth + 1) * maze.getRooms().size()) - 1.5)));
+                roomWidth = Math.min(roomWidth, width);
+            }
             roomLocations = layoutStrategy.calculateRoomLocations(
-                    maze.getRooms(), dimension, roomDimension);
+                    maze.getRooms(), width, height, roomWidth);
         }
     }
 
@@ -211,7 +241,7 @@ public class MazeObserver implements IMazeObserver {
     }
 
     public void paintToFile(String fileName) {
-        BufferedImage image = new BufferedImage(dimension, dimension, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
 
         gamePanel.paintComponent(g2d);

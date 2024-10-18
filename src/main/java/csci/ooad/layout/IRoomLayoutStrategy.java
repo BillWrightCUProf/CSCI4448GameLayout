@@ -7,5 +7,5 @@ import java.util.Map;
 import java.util.Set;
 
 public interface IRoomLayoutStrategy {
-    Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer roomWidth);
+    Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer panelHeight, Integer roomWidth);
 }

@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class GridLayoutStrategy implements IRoomLayoutStrategy {
     @Override
-    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer roomWidth) {
+    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
         // Define the upper right location so that the room just fits in this corner
         // --------------------------------------
         //|                                     |
