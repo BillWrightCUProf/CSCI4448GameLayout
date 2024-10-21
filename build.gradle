@@ -10,7 +10,7 @@ plugins {
 base {
     group = 'io.github.billwrightcuprof'
     archivesName = 'csci4448.gameLayout'
-    version = '1.11.0'
+    version = '1.11.1'
 }
 
 java {

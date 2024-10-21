@@ -25,6 +25,15 @@ class ImageFactoryTest {
         assertTrue(imageFileNames.size() > 5);
     }
 
+    @Test
+    void testLoadingOfRoomImagesFromJarFile() {
+        ImageFactory imageFactory = ImageFactory.getInstance();
+        String homeDir = System.getProperty("user.home");
+        String jarFilePath = homeDir + "/Documents/cu-courses/csci4448/Projects/CSCI4448GameLayout/build/libs/csci4448.gameLayout-1.11.1.jar";
+        List<String> imageNames = imageFactory.getAllMatchingFileNamesFromJarFile(jarFilePath, "images", "png");
+        assertTrue(imageNames.size() > 5);
+    }
+
     @Disabled
     void testAddingCustomImages() {
         ImageFactory imageFactory = ImageFactory.getInstance();

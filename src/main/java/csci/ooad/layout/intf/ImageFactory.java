@@ -127,12 +127,11 @@ public class ImageFactory {
         return getAllMatchingImageNamesInResourceDirectory(pathInResource, containsSnippet);
     }
 
-    private List<String> getAllMatchingFileNamesFromJarFile(String pathToJarFile, String pathInResource, String containsSnippet) {
+    public List<String> getAllMatchingFileNamesFromJarFile(String pathToJarFile, String pathInResource, String containsSnippet) {
         try {
             Enumeration<JarEntry> entries;
-            try (JarFile jarFile = new JarFile(pathToJarFile)) {
-                entries = jarFile.entries();
-            }
+            JarFile jarFile = new JarFile(pathToJarFile);
+            entries = jarFile.entries();
             List<String> imageNames = new ArrayList<>();
             while (entries.hasMoreElements()) {
                 JarEntry entry = entries.nextElement();
@@ -142,7 +141,7 @@ public class ImageFactory {
                 }
             }
             return imageNames;
-        } catch (IOException e) {
+        } catch (Throwable e) {
             logger.warn("Could not load image files from within jar file: {}", pathToJarFile, e);
             return Collections.emptyList();
         }
