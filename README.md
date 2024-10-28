@@ -60,7 +60,19 @@ I simplified things a bit and made them more complicated too:
 * Added ability to set height and width of maze separately
 * If room size isn't specified, it is calculate to make rooms as big as possible
 
-![FullyConnected16RoomLayout.grid.png](sampleLayouts/FullyConnected16RoomLayout.grid.png)
+### Version 1.11.1
+Fixed the "zip file is closed" error.
+
+### Version 1.11.2
+Trying to fix getting a null pointer error if the parent program ends while I'm still drawing
+
+### Version 2.0.0
+* Changed the IMazeSubject interface to remove the erroneous
+static variables. Now implementors of this interface need to 
+create the observers list.
+* Changed the name of a method in the IMaze interface
+
+* ![FullyConnected16RoomLayout.grid.png](sampleLayouts/FullyConnected16RoomLayout.grid.png)
 
 
 ### TODO:

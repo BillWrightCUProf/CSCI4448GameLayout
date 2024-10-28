@@ -41,7 +41,7 @@ public class ExampleMaze implements IMaze {
     }
 
     @Override
-    public Set<String> getRooms() {
+    public Set<String> getRoomNames() {
         return roomMap.keySet();
     }
 

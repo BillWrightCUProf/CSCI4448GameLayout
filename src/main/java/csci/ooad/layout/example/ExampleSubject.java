@@ -1,13 +1,26 @@
 package csci.ooad.layout.example;
 
 import csci.ooad.layout.intf.IMaze;
+import csci.ooad.layout.intf.IMazeObserver;
 import csci.ooad.layout.intf.IMazeSubject;
 import csci.ooad.layout.intf.MazeObserver;
 
-public class ExampleSubject implements IMazeSubject {
+import java.util.ArrayList;
+import java.util.List;
 
+public class ExampleSubject implements IMazeSubject {
     IMaze maze;
 
+    List<IMazeObserver> observers = new ArrayList<>();
+
+    public void attach(IMazeObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public List<IMazeObserver> getObservers() {
+        return observers;
+    }
 
     public void playGameWithChangingMazeShape() throws InterruptedException {
         maze = ExampleMaze.createRoomGrid(4);

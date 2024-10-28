@@ -224,17 +224,17 @@ public class MazeObserver implements IMazeObserver {
                 // or, panelWidth = rW*nR + 1.5 * rW *nR - 1.5*rW*nR
                 // roomWidth = panelWidth/(n + 1.5(n-1))
                 // roomWidth = panelWidth/(2.5n - 1.5)
-                roomWidth = Math.toIntExact(Math.round(width / (((ratioOfSpacingToRoomWidth + 1) * maze.getRooms().size()) - 1.5)));
+                roomWidth = Math.toIntExact(Math.round(width / (((ratioOfSpacingToRoomWidth + 1) * maze.getRoomNames().size()) - 1.5)));
                 roomWidth = Math.min(roomWidth, width);
             }
             roomLocations = layoutStrategy.calculateRoomLocations(
-                    maze.getRooms(), width, height, roomWidth);
+                    maze.getRoomNames(), width, height, roomWidth);
         }
     }
 
     private void setRoomImages(IMaze maze) {
         if (roomImages.isEmpty() && roomShape == RoomShape.IMAGE) {
-            for (String room : maze.getRooms()) {
+            for (String room : maze.getRoomNames()) {
                 roomImages.put(room, imageFactory.getNextImage(room));
             }
         }

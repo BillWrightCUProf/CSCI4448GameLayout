@@ -53,7 +53,6 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        logger.debug("In paintComponent. Width of parent is: {}", this.getParent().getWidth());
         paintMaze(g2);
     }
 
@@ -108,7 +107,7 @@ public class GamePanel extends JPanel {
 
     private void drawRoomConnections(Graphics2D g2) {
         g2.setColor(CONNECTOR_COLOR);
-        for (String currentRoom : maze.getRooms()) {
+        for (String currentRoom : maze.getRoomNames()) {
             for (String neighbor : maze.getNeighborsOf(currentRoom)) {
                 Point roomLocation = roomLocations.get(currentRoom);
                 Point neighborLocation = roomLocations.get(neighbor);
