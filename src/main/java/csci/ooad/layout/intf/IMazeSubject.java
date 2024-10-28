@@ -12,8 +12,12 @@ public interface IMazeSubject {
     IMaze getMaze();
 
     default void notifyObservers(String statusMessage) {
+        notifyObservers(List.of(statusMessage));
+    }
+
+    default void notifyObservers(List<String> statusMessages) {
         for (IMazeObserver observer : getObservers()) {
-            observer.update(getMaze(), statusMessage);
+            observer.update(getMaze(), statusMessages);
         }
     }
 }
