@@ -189,15 +189,15 @@ class MazeObserverTest {
     @Test
     void testFullyConnectedRoomsWithCircularLayout() {
         MazeObserver mazeObserver = MazeObserver.getNewBuilder("Polymorphia")
-                .useRadialLayoutStrategy()
-//                .useGridLayoutStrategy()
+//                .useRadialLayoutStrategy()
+                .useGridLayoutStrategy()
 //                .useInLineLayoutStrategy()
                 .useImageRooms()
                 .setDelayInSecondsAfterUpdate(5)
-//                .setRoomDimension(150)
-                .setDimension(1500)
-//                .setWidth(2000)
-//                .setHeight(1200)
+//                .setDimension(1500)
+                .setRoomDimension(350)
+                .setWidth(3000)
+                .setHeight(1500)
                 .setRatioOfSpacingToRoomWidth(0.7)
                 .build();
 

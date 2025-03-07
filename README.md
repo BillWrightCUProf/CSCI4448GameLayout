@@ -72,10 +72,15 @@ static variables. Now implementors of this interface need to
 create the observers list.
 * Changed the name of a method in the IMaze interface
 
-* ![FullyConnected16RoomLayout.grid.png](sampleLayouts/FullyConnected16RoomLayout.grid.png)
+### Version 2.1.0
+* Maze now draws correctly for non-square dimensions
+
+### TODO: Version 2.2.0
+* Add in icons for characters and draw them in the rooms
+* Run on a separate thread? Or delay after drawing maze
+
+![FullyConnected16RoomLayout.grid.png](sampleLayouts/FullyConnected16RoomLayout.grid.png)
 
 
 ### TODO:
 * Add check for panels too large and rooms too large for the panel
-* Try to get the room images as circles, so that arrows end at the image boundary, though that will be less good for the text... maybe keep it as is.
-* Make the images for the rooms persistent. Now they change on every update of the Maze

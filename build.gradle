@@ -10,7 +10,7 @@ plugins {
 base {
     group = 'io.github.billwrightcuprof'
     archivesName = 'csci4448.gameLayout'
-    version = '2.0.0'
+    version = '2.1.0'
 }
 
 java {
@@ -37,7 +37,7 @@ configurations {
 }
 
 dependencies {
-    implementation 'ch.qos.logback:logback-classic:1.4.14'
+    implementation 'ch.qos.logback:logback-classic:1.5.17'
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

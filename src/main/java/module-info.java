@@ -4,4 +4,5 @@ module CSCD454GameLayout.main {
 
     exports csci.ooad.layout.intf;
     exports csci.ooad.layout.example;
+    exports csci.ooad.layout;
 }

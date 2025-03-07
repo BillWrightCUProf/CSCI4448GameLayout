@@ -31,8 +31,8 @@ public class GridLayoutStrategy implements IRoomLayoutStrategy {
         Point currentLocation = new Point(roomWidth/2, roomWidth/2);
 
         // I take the max of dimension-1 and 1 just in case there is only one room in the maze
-        Integer rowSpacing = (panelWidth - roomWidth) / Math.max(dimension - 1, 1);
-        Integer colSpacing = rowSpacing;
+        Integer colSpacing = (panelWidth - roomWidth) / Math.max(dimension - 1, 1);
+        Integer rowSpacing = (panelHeight - roomWidth) / Math.max(dimension - 1, 1);
 
         Integer roomCount = 0;
         for (String currentRoomName : roomNames) {

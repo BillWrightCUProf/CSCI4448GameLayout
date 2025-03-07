@@ -25,6 +25,7 @@ public class GamePanel extends JPanel {
     IMaze maze;
     Map<String, Point> roomLocations;
     Map<String, Image> roomImages;
+    Map<String, Image> characterImages;
 
     RoomShape roomShape;
     Color roomBackgroundColor = DEFAULT_ROOM_COLOR;
@@ -73,14 +74,21 @@ public class GamePanel extends JPanel {
 
         paintRoomName(g2, roomName, upperRightCorner);
         paintRoomContents(g2, roomName, upperRightCorner);
+//        paintCharacters(g2, roomCenter);
     }
 
-    private void paintRoomContents(Graphics2D g2, String roomName, Point upperRightCorner) {
+    private void paintCharacters(Graphics2D g2, Point roomCenter) {
+        Image caveRoomImage = characterImages.get("arwen");
+        g2.drawImage(caveRoomImage, roomCenter.x, roomCenter.y, 50, 50, this);
+
+    }
+
+    private void paintRoomContents(Graphics2D g2, String roomName, Point upperLeftCorner) {
         Integer fontHeight = g2.getFontMetrics().getHeight();
-        Integer yPosition = upperRightCorner.y + fontHeight * 2 + 2;
+        Integer yPosition = upperLeftCorner.y + fontHeight * 2 + 2;
         g2.setFont(ROOM_CONTENTS_FONT);
         for (String desc : maze.getContents(roomName)) {
-            g2.drawString(desc, upperRightCorner.x + 5, yPosition);
+            g2.drawString(desc, upperLeftCorner.x + 5, yPosition);
             yPosition += fontHeight + 2;
         }
     }

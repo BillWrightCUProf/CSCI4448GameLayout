@@ -10,10 +10,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MazeObserver implements IMazeObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
@@ -24,7 +21,7 @@ public class MazeObserver implements IMazeObserver {
 
     JFrame window;
     GamePanel gamePanel;
-    StatusPanel statusPanel = new StatusPanel(Collections.EMPTY_LIST);
+    StatusPanel statusPanel = new StatusPanel(new ArrayList<>());
     JPanel mainPanel = new JPanel(new GridLayout(2, 1));
 
     RoomShape roomShape = RoomShape.IMAGE;
@@ -40,6 +37,7 @@ public class MazeObserver implements IMazeObserver {
     Color textColor;
     Map<String, Point> roomLocations = new HashMap<>();
     Map<String, Image> roomImages = new HashMap<>();
+    Map<String, Image> characterImages = new HashMap<>();
     ImageFactory imageFactory;
 
     public static Builder getNewBuilder(String title) {
@@ -235,10 +233,18 @@ public class MazeObserver implements IMazeObserver {
     private void setRoomImages(IMaze maze) {
         if (roomImages.isEmpty() && roomShape == RoomShape.IMAGE) {
             for (String room : maze.getRoomNames()) {
-                roomImages.put(room, imageFactory.getNextImage(room));
+                roomImages.put(room, imageFactory.getNextRoomImage(room));
             }
         }
     }
+
+//    private void setCharacterImages(IMaze maze) {
+//        if (characterImages.isEmpty()) {
+//            for (String room : maze.getCharacterNames()) {
+//                characterImages.put(room, imageFactory.getNextCharacterImage(room));
+//            }
+//        }
+//    }
 
     public void paintToFile(String fileName) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -281,4 +287,22 @@ public class MazeObserver implements IMazeObserver {
 //        }
 //    }
 
+    // Create an animation to move a character component (create
+    // this class) from its current location to a new location. It
+    // should move along a straight line between the points.
+    // The animation stops when the character is at the ending position.
+//    def createAnimation(Component characterComponent,
+//                        Location ending,
+//                        Integer durationMilliseconds, Integer updateIntervalMilliseconds) {
+//        Timer timer = new Timer(updateIntervalMilliseconds, new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                x += 5;
+//                repaint();
+//            }
+//        });
+//        timer.start();
+//        timer.stop();
+//
+//    }
 }

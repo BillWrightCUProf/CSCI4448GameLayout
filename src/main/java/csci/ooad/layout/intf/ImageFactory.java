@@ -21,15 +21,18 @@ import java.util.jar.JarFile;
 public class ImageFactory {
     private static final Logger logger = LoggerFactory.getLogger(ImageFactory.class);
 
-    private final Map<String, Image> images = new HashMap<>();
-    private int index = 0;
+    private final Map<String, Image> roomImages = new HashMap<>();
+    private final Map<String, Image> characterImages = new HashMap<>();
+    private int roomNameIndex = 0;
+    private int characterNameIndex = 0;
 
     private static ImageFactory instance;
 
     public static ImageFactory getInstance() {
         if (instance == null) {
             instance = new ImageFactory();
-            instance.loadImages();
+            instance.loadRoomImages();
+            instance.loadCharacterImages();
         }
         return instance;
     }
@@ -37,40 +40,52 @@ public class ImageFactory {
     private ImageFactory() {
     }
 
-    private void loadImages() {
+    private void loadCharacterImages() {
         // First load a default hard-coded image so that we never have zero images
-        loadImage("rivendell-circle.png");
+        loadImage("arwen.png", characterImages, "characterImages");
+    }
 
-        List<String> imageFileNames = getAllMatchingFileNamesInResourceDirectory("images", "png");
+    private void loadRoomImages() {
+        // First load a default hard-coded image so that we never have zero images
+        loadImage("rivendell-circle.png", roomImages, "roomImages");
+        loadImages(roomImages, "roomImages");
+    }
+
+    private void loadImages(Map<String, Image> images, String dirName) {
+        List<String> imageFileNames = getAllMatchingFileNamesInResourceDirectory(dirName, "png");
         if (imageFileNames.isEmpty()) {
             logger.warn("Automatic loading of images failed!");
-            loadDefaultImages();
+            loadDefaultRoomImages();
         } else {
             for (String imageFileName : imageFileNames) {
-                loadImage(imageFileName);
+                loadImage(imageFileName, images, dirName);
                 logger.info("image file {} loaded...", imageFileName);
             }
         }
     }
 
-    private void loadDefaultImages() {
+    private void loadDefaultRoomImages() {
         // This is only run if the automatic loading fails
-        logger.info("loading default images...");
-        loadImage("bagend-circle.png");
-        loadImage("crystal-circle.png");
-        loadImage("fangorn-forest-circle.png");
-        loadImage("fountain-circle.png");
-        loadImage("lava-circle.png");
-        loadImage("rivendell-circle.png");
-        loadImage("stalactite-circle.png");
-        loadImage("swamp-circle.png");
+        logger.info("loading default room images...");
+        loadImage("bagend-circle.png", roomImages, "roomImages");
+        loadImage("crystal-circle.png", roomImages, "roomImages");
+        loadImage("fangorn-forest-circle.png", roomImages, "roomImages");
+        loadImage("fountain-circle.png", roomImages, "roomImages");
+        loadImage("lava-circle.png", roomImages, "roomImages");
+        loadImage("rivendell-circle.png", roomImages, "roomImages");
+        loadImage("stalactite-circle.png", roomImages, "roomImages");
+        loadImage("swamp-circle.png", roomImages, "roomImages");
     }
 
-    public List<String> getImageNames() {
-        return new ArrayList<>(images.keySet());
+    public List<String> getRoomImageNames() {
+        return new ArrayList<>(roomImages.keySet());
     }
 
-    public void loadCustomImage(String imageFilePath) {
+    public List<String> getCharacterImageNames() {
+        return new ArrayList<>(characterImages.keySet());
+    }
+
+    public void loadCustomImage(String imageFilePath, Map<String, Image> images) {
         try {
             File imageFile = new File(imageFilePath);
             Image image = ImageIO.read(imageFile);
@@ -81,12 +96,16 @@ public class ImageFactory {
         }
     }
 
-    private void loadImage(String fileName) {
+    public void loadCustomImage(String imageFilePath) {
+        loadCustomImage(imageFilePath, roomImages);
+    }
+
+    private void loadImage(String fileName, Map<String, Image> images, String dirName) {
         String imageName = fileName.split("-")[0].toLowerCase();
         try {
             images.put(
                     imageName,
-                    ImageIO.read(getClass().getResourceAsStream("/images/" + fileName)));
+                    ImageIO.read(getClass().getResourceAsStream("/" + dirName + "/" + fileName)));
         } catch (java.io.IOException | IllegalArgumentException e) {
             logger.warn("Could not load image: {}", fileName, e);
         }
@@ -147,26 +166,40 @@ public class ImageFactory {
         }
     }
 
-    public String getBestImageNameMatch(String roomName) {
+    public String getBestImageNameMatch(String name, Map<String, Image> images) {
         for (String imageName : images.keySet()) {
-            if (roomName.toLowerCase().contains(imageName.toLowerCase().split("-")[0])) {
+            if (name.toLowerCase().contains(imageName.toLowerCase().split("-")[0])) {
                 return imageName;
             }
         }
         return null;
     }
 
-    public Image getNextImage(String roomName) {
-        String imageName = getBestImageNameMatch(roomName);
+    public Image getNextRoomImage(String name) {
+        String imageName = getBestImageNameMatch(name, roomImages);
         if (imageName == null) {
-            imageName = getNextRandomImageName();
+            imageName = getNextRandomRoomImageName();
         }
-        return images.get(imageName);
+        return roomImages.get(imageName);
     }
 
-    private String getNextRandomImageName() {
-        List<String> keys = images.keySet().stream().toList();
-        index = (index + 1) % images.size();
-        return keys.get(index);
+    public Image getNextCharacterImage(String name) {
+        String imageName = getBestImageNameMatch(name, characterImages);
+        if (imageName == null) {
+            imageName = getNextRandomRoomImageName();
+        }
+        return characterImages.get(imageName);
+    }
+
+    private String getNextRandomRoomImageName() {
+        List<String> keys = roomImages.keySet().stream().toList();
+        roomNameIndex = (roomNameIndex + 1) % roomImages.size();
+        return keys.get(roomNameIndex);
+    }
+
+    private String getNextRandomCharacterImageName() {
+        List<String> keys = characterImages.keySet().stream().toList();
+        characterNameIndex = (characterNameIndex + 1) % characterImages.size();
+        return keys.get(characterNameIndex);
     }
 }
