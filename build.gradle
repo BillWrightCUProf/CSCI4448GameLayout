@@ -47,10 +47,7 @@ test {
 }
 
 
-signing {
-    useGpgCmd()
-    sign publishing.publications.mavenJava
-}
+
 
 publishing {
     publications {
@@ -106,5 +103,10 @@ publishing {
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.mavenJava
 }
 
