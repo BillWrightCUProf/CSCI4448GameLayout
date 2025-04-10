@@ -42,9 +42,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
-test {
-    useJUnitPlatform()
-}
+//test {
+//    useJUnitPlatform()
+//}
 
 
 
@@ -106,7 +106,6 @@ publishing {
 }
 
 signing {
-    useGpgCmd()
     sign publishing.publications.mavenJava
 }
 
