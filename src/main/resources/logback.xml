@@ -13,13 +13,6 @@
         </encoder>
     </appender>
 
-    # Game Status Appender --- just for logging the state of the game
-    <appender name="Game_Status" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%cyan(%msg)</pattern>
-        </encoder>
-    </appender>
-
     # File appender
     <appender name="File_Output" class="ch.qos.logback.core.FileAppender">
         <file>arcane.log</file>
@@ -36,10 +29,4 @@
     <logger name="csci.ooad.layout" level="info" additivity="false">
         <appender-ref ref="Same_As_Println" />
     </logger>
-
-    <logger name="csci.ooad.layout" level="info" additivity="false">
-        <appender-ref ref="Game_Status" />
-        <appender-ref ref="File_Output" />
-    </logger>
-
 </configuration>

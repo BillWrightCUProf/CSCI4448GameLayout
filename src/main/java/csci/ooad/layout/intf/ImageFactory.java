@@ -32,7 +32,7 @@ public class ImageFactory {
         if (instance == null) {
             instance = new ImageFactory();
             instance.loadRoomImages();
-//            instance.loadCharacterImages();
+            instance.loadCharacterImages();
         }
         return instance;
     }
@@ -41,8 +41,9 @@ public class ImageFactory {
     }
 
     private void loadCharacterImages() {
-        // First load a default hard-coded image so that we never have zero images
+        // First, load a default hard-coded image so that we never have zero images
         loadImage("arwen.png", characterImages, "characterImages");
+        loadImages(characterImages, "characterImages");
     }
 
     private void loadRoomImages() {
@@ -101,7 +102,7 @@ public class ImageFactory {
     }
 
     private void loadImage(String fileName, Map<String, Image> images, String dirName) {
-        String imageName = fileName.split("-")[0].toLowerCase();
+        String imageName = fileName.split("-")[0].split("\\.")[0].toLowerCase();
         try {
             images.put(
                     imageName,

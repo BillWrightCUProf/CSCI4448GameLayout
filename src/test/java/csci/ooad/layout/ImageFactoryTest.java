@@ -23,6 +23,10 @@ class ImageFactoryTest {
         List<String> imageFileNames = imageFactory.getRoomImageNames();
         System.out.println(imageFileNames);
         assertTrue(imageFileNames.size() > 5);
+
+        List<String> characterImageFileNames = imageFactory.getCharacterImageNames();
+        System.out.println(characterImageFileNames);
+        assertTrue(characterImageFileNames.size() > 0);
     }
 
     @Test
