@@ -10,14 +10,15 @@ plugins {
 base {
     group = 'io.github.billwrightcuprof'
     archivesName = 'csci4448.gameLayout'
-    version = '2.1.0'
+    version = '3.0.0'
 }
 
 java {
-    sourceCompatibility = 17
-    targetCompatibility = 17
     withJavadocJar()
     withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 repositories {
@@ -34,21 +35,31 @@ sourceSets {
 configurations {
     integrationTestImplementation.extendsFrom testImplementation
     integrationTestRuntimeOnly.extendsFrom runtimeOnly
+
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
 }
 
 dependencies {
-    implementation 'ch.qos.logback:logback-classic:1.5.17'
+    implementation "org.slf4j:slf4j-api:2.0.17"
+    implementation 'ch.qos.logback:logback-classic:1.5.30'
+//    implementation 'org.springframework.boot:spring-boot-starter-logging:3.3.5'
 
-    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.10.0'
+
+    // BDD testing libraries
+    testImplementation 'io.cucumber:cucumber-picocontainer:7.21.1'
+    testImplementation 'io.cucumber:cucumber-java:7.21.1'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.21.1'
 }
 
 test {
     useJUnitPlatform()
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
+    systemProperty "cucumber.filter.tags", "not @disabled"
 }
 
 signing {
@@ -111,3 +122,7 @@ publishing {
     }
 }
 
+tasks.withType(Javadoc).configureEach {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.quiet()
+}
