@@ -32,7 +32,7 @@ public class ImageFactory {
         if (instance == null) {
             instance = new ImageFactory();
             instance.loadRoomImages();
-            instance.loadCharacterImages();
+//            instance.loadCharacterImages();
         }
         return instance;
     }
@@ -46,7 +46,7 @@ public class ImageFactory {
     }
 
     private void loadRoomImages() {
-        // First load a default hard-coded image so that we never have zero images
+        // First, load a default hard-coded image so that we never have zero images
         loadImage("rivendell-circle.png", roomImages, "roomImages");
         loadImages(roomImages, "roomImages");
     }

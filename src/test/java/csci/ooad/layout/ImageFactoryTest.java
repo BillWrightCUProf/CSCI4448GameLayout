@@ -29,7 +29,8 @@ class ImageFactoryTest {
     void testLoadingOfRoomImagesFromJarFile() {
         ImageFactory imageFactory = ImageFactory.getInstance();
         String homeDir = System.getProperty("user.home");
-        String jarFilePath = homeDir + "/Documents/cu-courses/csci4448/Projects/CSCI4448GameLayout/build/libs/csci4448.gameLayout-2.1.0.jar";
+        String jarFilePath = homeDir + "/iCloud/Documents/cu-courses/csci4448/Projects/CSCI4448GameLayout/build/libs/csci4448.gameLayout-3.0.0.jar";
+        assert new java.io.File(jarFilePath).exists();
         List<String> imageNames = imageFactory.getAllMatchingFileNamesFromJarFile(jarFilePath, "roomImages", "png");
         assertTrue(imageNames.size() > 5);
     }
