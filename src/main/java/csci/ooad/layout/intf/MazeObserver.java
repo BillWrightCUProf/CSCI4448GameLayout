@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class MazeObserver implements IMazeObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
@@ -26,11 +27,10 @@ public class MazeObserver implements IMazeObserver {
 
     RoomShape roomShape = RoomShape.IMAGE;
     IRoomLayoutStrategy layoutStrategy = new RadialLayoutStrategy();
-    Integer dimension = 800;
     Integer width = 800;
     Integer height = 800;
     Integer roomWidth;
-    Double ratioOfSpacingToRoomWidth= 1.0;
+    Double ratioOfSpacingToRoomWidth = 1.0;
     Integer delayInSecondsAfterDisplayUpdate = 1;
     Color backgroundColor;
     Color roomBackgroundColor;
@@ -55,7 +55,7 @@ public class MazeObserver implements IMazeObserver {
         window.setLocationRelativeTo(null);
         statusPanel.setPreferredSize(new Dimension(window.getWidth(), 100));
         mainPanel.add(statusPanel, BorderLayout.NORTH);
-//        window.add(mainPanel);
+        statusPanel.setSize(window.getWidth(), 100);
         imageFactory = ImageFactory.getInstance();
     }
 
@@ -175,7 +175,7 @@ public class MazeObserver implements IMazeObserver {
     }
 
     @Override
-    public void update(IMaze maze, java.util.List<String> statusMessages) {
+    public void update(IMaze maze, List<String> statusMessages) {
         // TODO: Figure out why I have to remove this component and add it again. Why can't I just
         // update the status message? When I try that it doesn't display at all. I can't just do this:
         //  statusPanel.setStatus(statusMessages);
@@ -185,6 +185,22 @@ public class MazeObserver implements IMazeObserver {
         statusPanel = new StatusPanel(statusMessages);
         window.add(statusPanel, BorderLayout.NORTH);
 
+        // If the maze is null, then just display the current state, plus the new status messages
+        if (maze != null) {
+            updateGamePanel(maze);
+            window.add(gamePanel, BorderLayout.CENTER);
+        }
+
+        window.pack();
+        window.setVisible(true);
+        try {
+            Thread.sleep(delayInSecondsAfterDisplayUpdate * 1000);
+        } catch (InterruptedException ex) {
+            logger.warn("Display was interrupted...");
+        }
+    }
+
+    private void updateGamePanel(IMaze maze) {
         setRoomLocations(maze);
         setRoomImages(maze);
 
@@ -202,21 +218,12 @@ public class MazeObserver implements IMazeObserver {
         if (textColor != null) {
             gamePanel.setTextColor(textColor);
         }
-
-        window.add(gamePanel, BorderLayout.CENTER);
-        window.pack();
-        window.setVisible(true);
-        try {
-            Thread.sleep(delayInSecondsAfterDisplayUpdate * 1000);
-        } catch (InterruptedException ex) {
-            logger.warn("Display was interrupted...");
-        }
     }
 
     private void setRoomLocations(IMaze maze) {
         if (roomLocations.isEmpty()) {
             if (roomWidth == null) {
-                // We pick the room width so that the distance between the rooms is spacing-to-room-width-ratio times the room width
+                // The room width is set so that the distance between the rooms is spacing-to-room-width-ratio times the room width
                 // If spacing-to-room-width-ratio = 1.5, then:
                 // panelWidth = roomWidth*numRooms + (roomWidth*1.5)*(numRooms-1)
                 // or, panelWidth = rW*nR + 1.5 * rW *nR - 1.5*rW*nR
