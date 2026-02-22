@@ -17,7 +17,6 @@ public class ExampleSubject implements IMazeSubject {
         observers.add(observer);
     }
 
-    @Override
     public List<IMazeObserver> getObservers() {
         return observers;
     }
@@ -48,9 +47,21 @@ public class ExampleSubject implements IMazeSubject {
         }
     }
 
-    @Override
-    public IMaze getMaze() {
+    private IMaze getMaze() {
         return maze;
+    }
+
+    private void notifyObservers(String statusMessage) {
+//        notifyObservers(List.of(statusMessage));
+        for (IMazeObserver observer : getObservers()) {
+            observer.update(statusMessage);
+        }
+    }
+
+    private void notifyObservers(List<String> statusMessages) {
+        for (IMazeObserver observer : getObservers()) {
+            observer.update(getMaze(), statusMessages);
+        }
     }
 
     static public void main(String... args) throws InterruptedException {

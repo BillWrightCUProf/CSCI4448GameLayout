@@ -8,6 +8,10 @@ import java.util.List;
  */
 public interface IMazeObserver {
 
+    default void update(String statusMessage) {
+        update(null, Collections.singletonList(statusMessage));
+    }
+
     /**
      * Updates the specified maze.
      *
@@ -21,10 +25,10 @@ public interface IMazeObserver {
      * Updates the specified maze with the given status message.
      *
      * @param maze the maze to be updated
-     * @param statusMessages the status message to be displayed
+     * @param statusMessage the status message to be displayed
      */
-    default void update(IMaze maze, String statusMessages) {
-        update(maze, Collections.singletonList(statusMessages));
+    default void update(IMaze maze, String statusMessage) {
+        update(maze, Collections.singletonList(statusMessage));
     }
 
     /**
@@ -35,11 +39,4 @@ public interface IMazeObserver {
      */
     void update(IMaze maze, List<String> statusMessages);
 
-    /**
-     * Paints the maze to a file.
-     *
-     * @param filePath the file path to paint the maze to
-     */
-    default void paintToFile(String filePath) {
-    }
 }

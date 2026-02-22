@@ -73,6 +73,7 @@ class ExampleSubjectTest {
         game.attach(observer);
         game.playGame(5, "fully");
     }
+
     @Test
     void testPlayGame4x4RoomMaze() throws InterruptedException {
         ExampleSubject game = new ExampleSubject();
@@ -86,6 +87,31 @@ class ExampleSubjectTest {
         game.attach(observer);
         game.playGame(16, "grid");
     }
+
+    @Test
+    void testPlayGame4x4RoomMazeWithTwoObservers() throws InterruptedException {
+        ExampleSubject game = new ExampleSubject();
+        MazeObserver gridLayoutObserver = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useGridLayoutStrategy()
+                .setDimension(1200)
+                .setRoomDimension(150)
+                .setDelayInSecondsAfterUpdate(3)
+                .build();
+        game.attach(gridLayoutObserver);
+
+        MazeObserver radialLayoutObserver = MazeObserver.getNewBuilder("Example Game")
+                .useCircleRooms()
+                .useRadialLayoutStrategy()
+                .setDimension(800)
+                .setRoomDimension(150)
+                .setDelayInSecondsAfterUpdate(3)
+                .build();
+        game.attach(radialLayoutObserver);
+
+        game.playGame(16, "grid");
+    }
+
     @Test
     void testPlayGameFiveRoomRadialMaze() throws InterruptedException {
         ExampleSubject game = new ExampleSubject();
