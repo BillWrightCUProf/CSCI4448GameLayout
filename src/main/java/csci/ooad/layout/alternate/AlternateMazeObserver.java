@@ -28,7 +28,7 @@ public class AlternateMazeObserver implements IMazeObserver {
         }
         for (String room : maze.getRoomNames()) {
             System.out.println(room + ":");
-            for (String content : maze.getContents(room)) {
+            for (String content : maze.getArtifacts(room)) {
                 System.out.println("  Content: " + content);
             }
         }

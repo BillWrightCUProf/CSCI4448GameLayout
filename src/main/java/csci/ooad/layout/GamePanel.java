@@ -32,13 +32,15 @@ public class GamePanel extends JPanel {
     Color textColor = DEFAULT_TEXT_COLOR;
 
 
-    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, RoomShape roomShape, Integer width, Integer height, Integer roomRadius) {
+    public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, Map<String, Image> characterImages,
+                     RoomShape roomShape, Integer width, Integer height, Integer roomRadius) {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(DEFAULT_BACKGROUND_COLOR);
         this.setDoubleBuffered(true);
         this.maze = maze;
         this.roomLocations = roomLocations;
         this.roomImages = roomImages;
+        this.characterImages = characterImages;
         this.roomShape = roomShape;
         this.roomDimension = roomRadius;
     }
@@ -74,20 +76,37 @@ public class GamePanel extends JPanel {
 
         paintRoomName(g2, roomName, upperRightCorner);
         paintRoomContents(g2, roomName, upperRightCorner);
-//        paintCharacters(g2, roomCenter);
+        paintCharacters(g2, roomName, roomCenter);
     }
 
-    private void paintCharacters(Graphics2D g2, Point roomCenter) {
-        Image caveRoomImage = characterImages.get("arwen");
-        g2.drawImage(caveRoomImage, roomCenter.x, roomCenter.y, 50, 50, this);
+    private void paintCharacters(Graphics2D g2, String roomName, Point imageLocation) {
+        Integer fontHeight = g2.getFontMetrics().getHeight();
+        Point upperRightCorner = new Point(imageLocation.x + roomDimension / 2, imageLocation.y - roomDimension / 2);
 
+        for (String characterName : maze.getCharacters(roomName)) {
+            Image characterImage = characterImages.get(characterName.toLowerCase());
+            if (characterImage == null) {
+                paintCharacterName(g2, characterName, upperRightCorner);
+                upperRightCorner.y += fontHeight + 2;
+            } else {
+                g2.drawImage(characterImage, imageLocation.x, imageLocation.y, 50, 50, this);
+                imageLocation.x -= 50;
+            }
+        }
+    }
+
+    private void paintCharacterName(Graphics2D g2, String name, Point upperRightCorner) {
+        Integer fontHeight = g2.getFontMetrics().getHeight();
+        Integer yPosition = upperRightCorner.y + fontHeight * 2 + 2;
+        g2.setFont(ROOM_CONTENTS_FONT);
+        g2.drawString(name, upperRightCorner.x - 25, yPosition);
     }
 
     private void paintRoomContents(Graphics2D g2, String roomName, Point upperLeftCorner) {
         Integer fontHeight = g2.getFontMetrics().getHeight();
         Integer yPosition = upperLeftCorner.y + fontHeight * 2 + 2;
         g2.setFont(ROOM_CONTENTS_FONT);
-        for (String desc : maze.getContents(roomName)) {
+        for (String desc : maze.getArtifacts(roomName)) {
             g2.drawString(desc, upperLeftCorner.x + 5, yPosition);
             yPosition += fontHeight + 2;
         }
@@ -102,8 +121,8 @@ public class GamePanel extends JPanel {
     }
 
     void paintImageCenteredAt(Graphics2D g2, Point upperRightCorner, String roomName) {
-        Image caveRoomImage = roomImages.get(roomName);
-        g2.drawImage(caveRoomImage, upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension, this);
+        Image roomImage = roomImages.get(roomName);
+        g2.drawImage(roomImage, upperRightCorner.x, upperRightCorner.y, roomDimension, roomDimension, this);
     }
 
     void paintMaze(Graphics2D g2) {
@@ -136,8 +155,8 @@ public class GamePanel extends JPanel {
         // Adjust the starting and ending points of the line to end at the room boundary and not the center
         double deltaX = roomDimension / 2.0 * Math.cos(lineAngle);
         double deltaY = roomDimension / 2.0 * Math.sin(lineAngle);
-        Point roomBoundaryLocation = new Point((int)(roomLocation.x - deltaX), (int)(roomLocation.y - deltaY));
-        Point neighborBoundaryLocation = new Point((int)(neighborLocation.x + deltaX), (int)(neighborLocation.y + deltaY));
+        Point roomBoundaryLocation = new Point((int) (roomLocation.x - deltaX), (int) (roomLocation.y - deltaY));
+        Point neighborBoundaryLocation = new Point((int) (neighborLocation.x + deltaX), (int) (neighborLocation.y + deltaY));
 
         Stroke oldStroke = g2.getStroke();
         g2.setStroke(new BasicStroke(3));

@@ -186,10 +186,7 @@ public class ImageFactory {
 
     public Image getNextCharacterImage(String name) {
         String imageName = getBestImageNameMatch(name, characterImages);
-        if (imageName == null) {
-            imageName = getNextRandomRoomImageName();
-        }
-        return characterImages.get(imageName);
+        return characterImages.getOrDefault(imageName, null);
     }
 
     private String getNextRandomRoomImageName() {

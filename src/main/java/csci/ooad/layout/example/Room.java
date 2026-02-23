@@ -66,8 +66,12 @@ class Room implements IRoom {
         return this.name;
     }
 
-    public List<String> getContents() {
-        return List.of("# of Neighbors:" + neighbors.size(), "SkyWalker", "Sword", "Ogre");
+    public List<String> getArtifacts() {
+        return List.of("Sword", "Treasure");
+    }
+
+    public List<String> getCharacters() {
+        return List.of("Arwen", "Bilbo", "Frodo", "Gollum", "Troll", "Orc");
     }
 
     private void addNeighbor(Room aNeighbor) {

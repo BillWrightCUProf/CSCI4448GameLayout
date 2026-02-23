@@ -203,11 +203,12 @@ public class MazeObserver implements IMazeObserver {
     private void updateGamePanel(IMaze maze) {
         setRoomLocations(maze);
         setRoomImages(maze);
+        setCharacterImages(maze);
 
         if (gamePanel != null) {
             window.remove(gamePanel);
         }
-        gamePanel = new GamePanel(maze, roomLocations, roomImages, roomShape, width, height, roomWidth);
+        gamePanel = new GamePanel(maze, roomLocations, roomImages, characterImages, roomShape, width, height, roomWidth);
 
         if (backgroundColor != null) {
             gamePanel.setBackground(backgroundColor);
@@ -245,13 +246,19 @@ public class MazeObserver implements IMazeObserver {
         }
     }
 
-//    private void setCharacterImages(IMaze maze) {
-//        if (characterImages.isEmpty()) {
-//            for (String room : maze.getCharacterNames()) {
-//                characterImages.put(room, imageFactory.getNextCharacterImage(room));
-//            }
-//        }
-//    }
+    private void setCharacterImages(IMaze maze) {
+        if (characterImages.isEmpty()) {
+            for (String room : maze.getRoomNames()) {
+                for (String characterName : maze.getCharacters(room)) {
+                    String lowerCaseName = characterName.toLowerCase();
+                    Image image = imageFactory.getNextCharacterImage(lowerCaseName);
+                    if (image != null) {
+                        characterImages.put(lowerCaseName, imageFactory.getNextCharacterImage(lowerCaseName));
+                    }
+                }
+            }
+        }
+    }
 
     public void paintToFile(String fileName) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

@@ -13,7 +13,7 @@ class MazeObserverTest {
         MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
                 .useRadialLayoutStrategy()
                 .build();
-        mazeObserver.update(ExampleMaze.createRoomGrid(2));
+        mazeObserver.update(ExampleMaze.createRoomGrid(4));
         mazeObserver.paintToFile("sampleLayouts/FourRoomRadialLayout");
     }
 

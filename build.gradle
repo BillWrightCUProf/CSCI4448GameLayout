@@ -10,7 +10,7 @@ plugins {
 base {
     group = 'io.github.billwrightcuprof'
     archivesName = 'csci4448.gameLayout'
-    version = '3.0.0'
+    version = '3.1.0'
 }
 
 java {
@@ -44,7 +44,6 @@ configurations {
 dependencies {
     implementation "org.slf4j:slf4j-api:2.0.17"
     implementation 'ch.qos.logback:logback-classic:1.5.30'
-//    implementation 'org.springframework.boot:spring-boot-starter-logging:3.3.5'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
