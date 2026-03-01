@@ -1,10 +1,30 @@
 plugins {
     id 'java'
+    id 'application'
     // These next two plugins are for signing and pushing a jar to the Maven repository
     // There is considerable external setup to do this:
     //      https://central-stage.sonatype.org/register/central-portal/#choosing-a-namespace
     id 'maven-publish'
     id 'signing'
+}
+
+application {
+    mainClass = 'csci.ooad.layout.example.ExampleSubject'
+}
+
+// Custom run tasks for different demos
+tasks.register('runExample', JavaExec) {
+    group = 'application'
+    description = 'Run the ExampleSubject demo'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'csci.ooad.layout.example.ExampleSubject'
+}
+
+tasks.register('runCustomMaze', JavaExec) {
+    group = 'application'
+    description = 'Run the CustomMazeDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'csci.ooad.layout.example.CustomMazeDemo'
 }
 
 base {
@@ -17,13 +37,15 @@ java {
     withJavadocJar()
     withSourcesJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 
 repositories {
     mavenCentral()
 }
+
+
 
 sourceSets {
     integrationTest {
@@ -44,6 +66,9 @@ configurations {
 dependencies {
     implementation "org.slf4j:slf4j-api:2.0.17"
     implementation 'ch.qos.logback:logback-classic:1.5.30'
+
+    implementation 'org.jgrapht:jgrapht-core:1.5.2'
+
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

@@ -20,6 +20,8 @@ public class StatusPanel extends JPanel {
 
     public void setStatus(java.util.List<String> statusMessages) {
         statusArea.setText(String.join("\n", statusMessages));
+        revalidate();
+        repaint();
     }
 
 }

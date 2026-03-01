@@ -51,7 +51,7 @@ public class MazeObserver implements IMazeObserver {
     public MazeObserver(String title) {
         window = new JFrame(title);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setResizable(false);
+        window.setResizable(true);
         window.setLocationRelativeTo(null);
         statusPanel.setPreferredSize(new Dimension(window.getWidth(), 100));
         mainPanel.add(statusPanel, BorderLayout.NORTH);
@@ -176,14 +176,7 @@ public class MazeObserver implements IMazeObserver {
 
     @Override
     public void update(IMaze maze, List<String> statusMessages) {
-        // TODO: Figure out why I have to remove this component and add it again. Why can't I just
-        // update the status message? When I try that it doesn't display at all. I can't just do this:
-        //  statusPanel.setStatus(statusMessages);
-        if (statusPanel != null) {
-            window.remove(statusPanel);
-        }
-        statusPanel = new StatusPanel(statusMessages);
-        window.add(statusPanel, BorderLayout.NORTH);
+        statusPanel.setStatus(statusMessages);
 
         // If the maze is null, then just display the current state, plus the new status messages
         if (maze != null) {
