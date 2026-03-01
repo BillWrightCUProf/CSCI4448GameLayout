@@ -6,195 +6,90 @@ import csci.ooad.layout.intf.ImageFactory;
 import csci.ooad.layout.intf.MazeObserver;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static java.lang.Thread.sleep;
+
 class MazeObserverTest {
 
     @Test
-    void test4RoomRadialLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
-                .useRadialLayoutStrategy()
-                .build();
-        mazeObserver.update(ExampleMaze.createRoomGrid(4));
-        mazeObserver.paintToFile("sampleLayouts/FourRoomRadialLayout");
+    void testRadialLayouts() {
+        for (int numRooms : List.of(4, 9, 16)) {
+            MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
+                    .useRadialLayoutStrategy()
+                    .setDelayInSecondsAfterUpdate(3)
+                    .setRoomDimension(1000/numRooms)
+                    .setDimension(1000)
+                    .build();
+            mazeObserver.update(ExampleMaze.createRoomGrid(numRooms));
+            mazeObserver.paintToFile("sampleLayouts/" + numRooms + "RoomRadialLayout");
+        }
     }
 
     @Test
-    void test9RoomRadialLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
-                .useRadialLayoutStrategy()
-                .build();
-        mazeObserver.update(ExampleMaze.createRoomGrid(3));
-        mazeObserver.paintToFile("sampleLayouts/NineRoomRadialLayout");
+    void testGridLayouts() {
+        for (int numRooms : List.of(1, 4, 7, 9, 12, 16)) {
+            MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
+                    .useGridLayoutStrategy()
+                    .setDelayInSecondsAfterUpdate(3)
+                    .setRoomDimension(1000/numRooms)
+                    .setDimension(1000)
+                    .build();
+            mazeObserver.update(ExampleMaze.createRoomGrid(numRooms));
+            mazeObserver.paintToFile("sampleLayouts/" + numRooms + "RoomGridLayout");
+        }
     }
 
     @Test
-    void test16RoomRadialLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
-                .useRadialLayoutStrategy()
-                .build();
-        mazeObserver.update(ExampleMaze.createRoomGrid(10));
-        mazeObserver.paintToFile("sampleLayouts/SixteenRoomRadialLayout");
+    void testInLineLayouts() {
+        for (int numRooms : List.of(1, 3, 5, 7, 9)) {
+            MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
+                    .useInLineLayoutStrategy()
+                    .setDelayInSecondsAfterUpdate(3)
+                    .setRoomDimension(1000/numRooms)
+                    .setDimension(1000)
+                    .build();
+            mazeObserver.update(ExampleMaze.createRoomGrid(numRooms));
+            mazeObserver.paintToFile("sampleLayouts/" + numRooms + "RoomGridLayout");
+        }
     }
 
     @Test
-    void testGrid2x2Layout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createRoomGrid(4));
-        mazeObserver.paintToFile("sampleLayouts/FourRoomRadialLayout");
+    void testOneWayGridLayouts() {
+        for (int numRooms : List.of(2, 3, 5)) {
+            MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
+                    .useGridLayoutStrategy()
+                    .setDelayInSecondsAfterUpdate(3)
+                    .setRoomDimension(1000/numRooms)
+                    .setDimension(1000)
+                    .build();
+            mazeObserver.update(ExampleMaze.createFullyConnectedRooms(numRooms, false));
+            mazeObserver.paintToFile("sampleLayouts/" + numRooms + "RoomGridLayout");
+        }
     }
 
     @Test
-    void testGrid3x3Layout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createRoomGrid(9));
-        mazeObserver.paintToFile("sampleLayouts/NineRoomRadialLayout");
-    }
-
-    @Test
-    void testGrid4x4Layout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .setRoomDimension(200)
-                .setDimension(1000)
-                .build();
-
-        mazeObserver.update(ExampleMaze.createRoomGrid(16));
-        mazeObserver.paintToFile("sampleLayouts/SixteenRoomRadialLayout");
-    }
-
-    @Test
-    void testInlineLayout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useInLineLayoutStrategy()
-                .setRoomDimension(200)
-                .setDimension(1000)
-                .build();
-
-        mazeObserver.update(ExampleMaze.createRoomGrid(4));
-        mazeObserver.paintToFile("sampleLayouts/fourRoomInlineLayout");
-    }
-
-    @Test
-    void test1RoomLayout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(1, true));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected1RoomLayout.radial");
-    }
-
-    @Test
-    void test2RoomOneWayLayout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .build();
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(2, false));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected2RoomOneWayLayout.radial");
-    }
-
-    @Test
-    void test3RoomOneWayLayout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .build();
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(3, false));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected3RoomOneWayLayout.radial");
-    }
-
-    @Test
-    void test5RoomOneWayLayout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .build();
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(5, false));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected5RoomOneWayLayout.radial");
-    }
-
-    @Test
-    void testFullyConnected2RoomsLayout() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useRadialLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(2));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected2RoomLayout.radial");
-    }
-
-    void testFullyConnected3RoomsLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useRadialLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(3));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected3RoomLayout.radial");
-    }
-
-    void testFullyConnected3RoomsOneWayLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useRadialLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(3, false));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnectedOneWay3RoomLayout.radial");
-    }
-
-    void testFullyConnected4RoomsLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useRadialLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(4));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected4RoomLayout.radial");
-    }
-
-    void testFullyConnected9RoomsLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useRadialLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(9));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected9RoomLayout.radial");
-    }
-
-    void testFullyConnected9RoomsOneWayLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useRadialLayoutStrategy()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(9, false));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnectedOneWay9RoomLayout.radial");
-    }
-
-    @Test
-    void testFullyConnectedRoomsWithGridLayouts() {
-        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Grid Layout")
-                .useGridLayoutStrategy()
-                .useSquareRooms()
-                .useImageRooms()
-                .build();
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(4));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected4RoomLayout.grid");
-
-        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(16));
-        mazeObserver.paintToFile("sampleLayouts/FullyConnected16RoomLayout.grid");
+    void testFullyConnectedRadialLayout() {
+        for (int numRooms : List.of(2, 3, 4, 9)) {
+            for (boolean twoWayConnections : List.of(true, false)) {
+                MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Radial Layout")
+                        .useRadialLayoutStrategy()
+                        .setDelayInSecondsAfterUpdate(3)
+                        .setRoomDimension(1000 / numRooms)
+                        .setDimension(1000)
+                        .build();
+                mazeObserver.update(ExampleMaze.createFullyConnectedRooms(numRooms, twoWayConnections));
+                mazeObserver.paintToFile("sampleLayouts/" + numRooms + "RoomGrid" + twoWayConnections + "Layout");
+            }
+        }
     }
 
     @Test
     void testFullyConnectedRoomsWithCircularLayout() {
         MazeObserver mazeObserver = MazeObserver.getNewBuilder("Polymorphia")
-//                .useRadialLayoutStrategy()
                 .useGridLayoutStrategy()
-//                .useInLineLayoutStrategy()
                 .useImageRooms()
                 .setDelayInSecondsAfterUpdate(5)
-//                .setDimension(1500)
                 .setRoomDimension(350)
                 .setWidth(3000)
                 .setHeight(1500)
