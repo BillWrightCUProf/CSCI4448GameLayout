@@ -97,38 +97,28 @@ public class PolymorphiaDemo {
 
     public static IMaze createComplexMaze() {
         return new CustomMazeDemo.CustomMazeBuilder()
-                // Fully connected cluster (5 nodes, all connected to each other)
-                .connectOneWay("Hub A", "Hub B")
-                .connectOneWay("Hub A", "Hub C")
-                .connectOneWay("Hub A", "Hub D")
-                .connectOneWay("Hub A", "Hub E")
-                .connectOneWay("Hub B", "Hub A")
-                .connectOneWay("Hub B", "Hub C")
-                .connectOneWay("Hub B", "Hub D")
-                .connectOneWay("Hub B", "Hub E")
-                .connectOneWay("Hub C", "Hub A")
-                .connectOneWay("Hub C", "Hub B")
-                .connectOneWay("Hub C", "Hub D")
-                .connectOneWay("Hub C", "Hub E")
-                .connectOneWay("Hub D", "Hub A")
-                .connectOneWay("Hub D", "Hub B")
-                .connectOneWay("Hub D", "Hub C")
-                .connectOneWay("Hub D", "Hub E")
-                .connectOneWay("Hub E", "Hub A")
-                .connectOneWay("Hub E", "Hub B")
-                .connectOneWay("Hub E", "Hub C")
-                .connectOneWay("Hub E", "Hub D")
-                // Hub connects into sequential chain
-                .connectOneWay("Hub A", "Path 1")
-                .connectOneWay("Path 1", "Path 2")
-                .connectOneWay("Path 2", "Path 3")
-                .connectOneWay("Path 3", "Path 4")
-                // Sequential chain connects into ring
-                .connectOneWay("Path 4", "Ring North")
-                .connectOneWay("Ring North", "Ring East")
-                .connectOneWay("Ring East", "Ring South")
-                .connectOneWay("Ring South", "Ring West")
-                .connectOneWay("Ring West", "Ring North")
+                // Fully connected cluster
+                .connect("Hub A", "Hub B")
+                .connect("Hub A", "Hub C")
+                .connect("Hub A", "Hub D")
+                .connect("Hub A", "Hub E")
+                .connect("Hub B", "Hub C")
+                .connect("Hub B", "Hub D")
+                .connect("Hub B", "Hub E")
+                .connect("Hub C", "Hub D")
+                .connect("Hub C", "Hub E")
+                .connect("Hub D", "Hub E")
+                // Chain
+                .connect("Hub A", "Path 1")
+                .connect("Path 1", "Path 2")
+                .connect("Path 2", "Path 3")
+                .connect("Path 3", "Path 4")
+                // Ring
+                .connect("Path 4", "Ring North")
+                .connect("Ring North", "Ring East")
+                .connect("Ring East", "Ring South")
+                .connect("Ring South", "Ring West")
+                .connect("Ring West", "Ring North")
                 // Characters
                 .addCharacters("Hub A", "King", "Advisor")
                 .addCharacters("Hub B", "General")
@@ -151,6 +141,8 @@ public class PolymorphiaDemo {
                 .addArtifacts("Ring South", "Magic Staff")
                 .build();
     }
+
+
     public static IMaze createDoubleRingMaze() {
         return new CustomMazeDemo.CustomMazeBuilder()
                 // First ring: forest loop
@@ -190,10 +182,10 @@ public class PolymorphiaDemo {
         record Demo(String title, IMaze maze) {}
 
         List<Demo> demos = List.of(
-          new Demo("Sequential Maze", createSequentialMaze()),
-          new Demo("Ring Maze", createRingMaze()),
-          new Demo("Mixed Maze: chain → ring", createMixedMaze()),
-          new Demo("Double Ring Maze", createDoubleRingMaze()),
+//          new Demo("Sequential Maze", createSequentialMaze()),
+//          new Demo("Ring Maze", createRingMaze()),
+//          new Demo("Mixed Maze: chain → ring", createMixedMaze()),
+//          new Demo("Double Ring Maze", createDoubleRingMaze()),
                 new Demo("Complex Maze: cluster → chain → ring", createComplexMaze())
         );
 

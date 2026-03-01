@@ -6,19 +6,20 @@ import java.util.*;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.AsSubgraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
-import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 
 /**
- * Universal layout strategy that works for any maze topology.
+ * Universal layout strategy that works for any maze topology,
+ * including bidirectional (undirected) and unidirectional (directed) edges.
  *
- * Approach:
- * 1. Use JGraphT's SCC detection to find structural groups (rings, clusters, chains)
- * 2. Use topological sorting to order groups left-to-right
- * 3. Layout internals of each group with the right algorithm (circle, grid, line)
+ * Uses JGraphT's BiconnectivityInspector to detect structural groups,
+ * then applies the appropriate layout per group type:
+ *   - Ring (every node degree 2) → circle layout
+ *   - Cluster (dense connectivity) → grid layout
+ *   - Chain (linear sequence) → horizontal line layout
  */
 public class MixedLayoutStrategy implements IRoomLayoutStrategy {
 
@@ -26,8 +27,10 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
 
     // ─── Group Abstraction ────────────────────────────────────────────────────
 
+    // Classifies how a group of rooms should be visually arranged
     private enum GroupType { RING, CLUSTER, CHAIN }
 
+    // Holds a group of rooms, their type, and knows its own space requirements
     private static class Group {
         private final List<String> rooms;
         private final GroupType type;
@@ -41,6 +44,7 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
         GroupType getType() { return type; }
         int size() { return rooms.size(); }
 
+        // Returns half the horizontal space this group needs for layout spacing
         int halfWidth(int roomWidth) {
             int n = rooms.size();
             int spacing = roomWidth * 2;
@@ -54,6 +58,7 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
             };
         }
 
+        // Calculates circle radius based on room count and size
         static int ringRadius(int n, int roomWidth) {
             return Math.max(roomWidth * n / 3, roomWidth + 20);
         }
@@ -65,40 +70,17 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
         this.adjacencyMap = adjacencyMap;
     }
 
+    // Entry point: builds graph, identifies groups, orders them, computes positions
     @Override
     public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth,
                                                      Integer panelHeight, Integer roomWidth) {
-        return computeLayout(roomNames, panelWidth, panelHeight, roomWidth);
-    }
-
-    // ─── Graph Construction ───────────────────────────────────────────────────
-
-    private Graph<String, DefaultEdge> buildGraph(Set<String> roomNames) {
-        Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        for (String room : roomNames) {
-            graph.addVertex(room);
-        }
-        for (String room : roomNames) {
-            for (String neighbor : adjacencyMap.getOrDefault(room, Set.of())) {
-                if (roomNames.contains(neighbor)) {
-                    graph.addEdge(room, neighbor);
-                }
-            }
-        }
-        return graph;
-    }
-
-    // ─── Main Layout ─────────────────────────────────────────────────────────
-
-    private Map<String, Point> computeLayout(Set<String> roomNames, int panelWidth,
-                                             int panelHeight, int roomWidth) {
         Map<String, Point> result = new HashMap<>();
-        Graph<String, DefaultEdge> graph = buildGraph(roomNames);
+        Graph<String, DefaultEdge> graph = buildUndirectedGraph(roomNames);
 
-        // Step 1: Identify groups
+        // Find rings, clusters, and chains
         List<Group> groups = identifyGroups(graph);
 
-        // Step 2: Build room-to-group index
+        // Map each room to its group index for O(1) lookup
         Map<String, Integer> roomToGroup = new HashMap<>();
         for (int i = 0; i < groups.size(); i++) {
             for (String room : groups.get(i).getRooms()) {
@@ -106,20 +88,21 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
             }
         }
 
-        // Step 3: Order groups left-to-right
+        // Determine left-to-right ordering via BFS on group connectivity
         List<Group> ordered = orderGroups(groups, roomToGroup);
 
-        // Step 4: Calculate spacing and scale
+        // How much horizontal space each group needs
         List<Integer> halfWidths = ordered.stream()
                 .map(g -> g.halfWidth(roomWidth))
                 .toList();
 
+        // Shrink everything proportionally if total width exceeds panel
         int gap = roomWidth;
         int totalNeeded = halfWidths.stream().mapToInt(w -> w * 2).sum()
                 + gap * (ordered.size() - 1);
         double scale = Math.min(1.0, (double)(panelWidth - roomWidth * 2) / Math.max(totalNeeded, 1));
 
-        // Step 5: Place group centers
+        // Walk left-to-right placing each group's center point
         int cy = panelHeight / 2;
         double x = roomWidth;
         List<Point> groupCenters = new ArrayList<>();
@@ -130,7 +113,7 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
             x += hw * scale + gap * scale;
         }
 
-        // Step 6: Layout each group
+        // Place individual rooms around each group's center
         for (int i = 0; i < ordered.size(); i++) {
             layoutGroup(ordered.get(i), groupCenters.get(i), result,
                     roomWidth, panelWidth, panelHeight, scale);
@@ -139,33 +122,61 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
         return result;
     }
 
-    // ─── Group Identification ─────────────────────────────────────────────────
+    // ─── Graph Construction ───────────────────────────────────────────────────
 
-    private List<Group> identifyGroups(Graph<String, DefaultEdge> graph) {
-        List<Set<String>> sccs = new KosarajuStrongConnectivityInspector<>(graph)
-                .stronglyConnectedSets();
-
-        List<Group> groups = new ArrayList<>();
-        Set<String> chainRooms = new HashSet<>();
-
-        for (Set<String> scc : sccs) {
-            if (scc.size() > 1) {
-                Graph<String, DefaultEdge> subgraph = new AsSubgraph<>(graph, scc);
-                GroupType type = isRing(subgraph) ? GroupType.RING : GroupType.CLUSTER;
-                List<String> ordered = type == GroupType.RING
-                        ? traverseCycle(subgraph) : new ArrayList<>(scc);
-                groups.add(new Group(ordered, type));
-                System.out.println("Identified " + type + " group: " + ordered);
-            } else {
-                chainRooms.addAll(scc);
+    // Converts the directed adjacency map into an undirected JGraphT graph
+    // A→B and B→A collapse into a single undirected edge A—B
+    private Graph<String, DefaultEdge> buildUndirectedGraph(Set<String> roomNames) {
+        Graph<String, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+        for (String room : roomNames) {
+            graph.addVertex(room);
+        }
+        for (String room : roomNames) {
+            for (String neighbor : adjacencyMap.getOrDefault(room, Set.of())) {
+                if (roomNames.contains(neighbor) && !graph.containsEdge(room, neighbor)) {
+                    graph.addEdge(room, neighbor);
+                }
             }
         }
+        return graph;
+    }
+
+    // ─── Group Identification ─────────────────────────────────────────────────
+
+    // Uses biconnected components to classify rooms into rings, clusters, and chains
+    // Blocks with >2 nodes that all have degree 2 → ring
+    // Blocks with >2 nodes and higher degree → cluster
+    // Remaining unassigned rooms → chains (linked by bridge edges)
+    private List<Group> identifyGroups(Graph<String, DefaultEdge> graph) {
+        BiconnectivityInspector<String, DefaultEdge> inspector =
+                new BiconnectivityInspector<>(graph);
+
+        Set<Graph<String, DefaultEdge>> blocks = inspector.getBlocks();
+
+        List<Group> groups = new ArrayList<>();
+        Set<String> assignedRooms = new HashSet<>();
+
+        // Classify blocks with 3+ nodes as ring or cluster
+        for (Graph<String, DefaultEdge> block : blocks) {
+            if (block.vertexSet().size() <= 2) continue;
+
+            if (isRing(block)) {
+                groups.add(new Group(traverseCycle(block), GroupType.RING));
+            } else {
+                groups.add(new Group(new ArrayList<>(block.vertexSet()), GroupType.CLUSTER));
+            }
+            assignedRooms.addAll(block.vertexSet());
+        }
+
+        // Rooms not in any ring/cluster form chains
+        Set<String> chainRooms = new HashSet<>(graph.vertexSet());
+        chainRooms.removeAll(assignedRooms);
 
         if (!chainRooms.isEmpty()) {
+            // Split chain rooms into connected components, order each one
             Graph<String, DefaultEdge> chainSubgraph = new AsSubgraph<>(graph, chainRooms);
             for (Set<String> component : new ConnectivityInspector<>(chainSubgraph).connectedSets()) {
-                Graph<String, DefaultEdge> compGraph = new AsSubgraph<>(graph, component);
-                groups.add(new Group(topologicalOrder(compGraph), GroupType.CHAIN));
+                groups.add(new Group(orderChain(component, chainSubgraph), GroupType.CHAIN));
             }
         }
 
@@ -174,37 +185,54 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
 
     // ─── Group Ordering ───────────────────────────────────────────────────────
 
+    // BFS across groups to determine left-to-right placement order
+    // Groups connected to each other appear adjacent in the layout
     private List<Group> orderGroups(List<Group> groups, Map<String, Integer> roomToGroup) {
-        if (groups.isEmpty()) return groups;
+        if (groups.size() <= 1) return groups;
 
-        Graph<Integer, DefaultEdge> metaGraph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        for (int i = 0; i < groups.size(); i++) {
-            metaGraph.addVertex(i);
-        }
+        // Build adjacency between groups (if any room in group i neighbors a room in group j)
+        Map<Integer, Set<Integer>> groupAdj = new HashMap<>();
+        for (int i = 0; i < groups.size(); i++) groupAdj.put(i, new HashSet<>());
 
         for (int i = 0; i < groups.size(); i++) {
             for (String room : groups.get(i).getRooms()) {
                 for (String neighbor : adjacencyMap.getOrDefault(room, Set.of())) {
                     int j = roomToGroup.getOrDefault(neighbor, -1);
-                    if (j != -1 && j != i && !metaGraph.containsEdge(i, j)) {
-                        metaGraph.addEdge(i, j);
+                    if (j != -1 && j != i) {
+                        groupAdj.get(i).add(j);
                     }
                 }
             }
         }
 
-        try {
-            List<Group> ordered = new ArrayList<>();
-            new TopologicalOrderIterator<>(metaGraph)
-                    .forEachRemaining(idx -> ordered.add(groups.get(idx)));
-            return ordered;
-        } catch (Exception e) {
-            return groups;
+        // BFS from first group — visit order becomes left-to-right order
+        List<Group> ordered = new ArrayList<>();
+        Set<Integer> visited = new HashSet<>();
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(0);
+        visited.add(0);
+
+        while (!queue.isEmpty()) {
+            int idx = queue.poll();
+            ordered.add(groups.get(idx));
+            for (int neighbor : groupAdj.get(idx)) {
+                if (visited.add(neighbor)) {
+                    queue.add(neighbor);
+                }
+            }
         }
+
+        // Append any disconnected groups not reached by BFS
+        for (int i = 0; i < groups.size(); i++) {
+            if (!visited.contains(i)) ordered.add(groups.get(i));
+        }
+
+        return ordered;
     }
 
     // ─── Layout Dispatch ──────────────────────────────────────────────────────
 
+    // Routes to the correct layout method based on group type
     private void layoutGroup(Group group, Point center, Map<String, Point> result,
                              int roomWidth, int panelWidth, int panelHeight, double scale) {
         switch (group.getType()) {
@@ -214,6 +242,7 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
         }
     }
 
+    // Places rooms evenly around a circle, starting from the top
     private void layoutRing(Group group, Point center, Map<String, Point> result,
                             int roomWidth, int panelWidth, int panelHeight) {
         List<String> rooms = group.getRooms();
@@ -228,6 +257,7 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
         }
     }
 
+    // Places rooms in a square-ish grid centered on the group center
     private void layoutGrid(Group group, Point center, Map<String, Point> result,
                             int roomWidth, int panelWidth, int panelHeight) {
         List<String> rooms = group.getRooms();
@@ -250,6 +280,7 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
         }
     }
 
+    // Places rooms in a horizontal line centered on the group center
     private void layoutChain(Group group, Point center, Map<String, Point> result,
                              int roomWidth, int panelWidth, int panelHeight, double scale) {
         List<String> chain = group.getRooms();
@@ -265,30 +296,54 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
 
     // ─── Graph Helpers ───────────────────────────────────────────────────────
 
-    private boolean isRing(Graph<String, DefaultEdge> subgraph) {
-        for (String room : subgraph.vertexSet()) {
-            if (subgraph.inDegreeOf(room) != 1 || subgraph.outDegreeOf(room) != 1) return false;
+    // Checks if a block is a simple cycle: every node has exactly 2 neighbors
+    private boolean isRing(Graph<String, DefaultEdge> block) {
+        for (String room : block.vertexSet()) {
+            if (block.degreeOf(room) != 2) return false;
         }
         return true;
     }
 
-    private List<String> traverseCycle(Graph<String, DefaultEdge> subgraph) {
+    // Walks an undirected cycle by always going to the neighbor we didn't come from
+    private List<String> traverseCycle(Graph<String, DefaultEdge> block) {
         List<String> ordered = new ArrayList<>();
-        String start = subgraph.vertexSet().iterator().next();
+        String start = block.vertexSet().iterator().next();
+        String prev = null;
         String current = start;
         do {
             ordered.add(current);
-            current = Graphs.successorListOf(subgraph, current).get(0);
+            List<String> neighbors = Graphs.neighborListOf(block, current);
+            String next = neighbors.get(0).equals(prev) ? neighbors.get(1) : neighbors.get(0);
+            prev = current;
+            current = next;
         } while (!current.equals(start));
         return ordered;
     }
 
-    private List<String> topologicalOrder(Graph<String, DefaultEdge> subgraph) {
+    // Orders chain rooms by starting from a degree-1 endpoint and walking the path
+    private List<String> orderChain(Set<String> component, Graph<String, DefaultEdge> chainSubgraph) {
+        Graph<String, DefaultEdge> sub = new AsSubgraph<>(chainSubgraph, component);
+
+        // Find an endpoint (degree 1) to start from, or pick any node
+        String start = component.stream()
+                .filter(r -> sub.degreeOf(r) <= 1)
+                .findFirst()
+                .orElse(component.iterator().next());
+
         List<String> ordered = new ArrayList<>();
-        new TopologicalOrderIterator<>(subgraph).forEachRemaining(ordered::add);
+        Set<String> visited = new HashSet<>();
+        String current = start;
+        while (current != null && visited.add(current)) {
+            ordered.add(current);
+            current = Graphs.neighborListOf(sub, current).stream()
+                    .filter(n -> !visited.contains(n))
+                    .findFirst()
+                    .orElse(null);
+        }
         return ordered;
     }
 
+    // Keeps a value within [min, max] bounds to prevent rooms going off-panel
     private int clamp(int val, int min, int max) {
         return Math.max(min, Math.min(max, val));
     }
