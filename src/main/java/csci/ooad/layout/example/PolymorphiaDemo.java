@@ -1,11 +1,15 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.MazeLayoutDetector;
+import csci.ooad.layout.MazeLayout;
+
 import csci.ooad.layout.IRoomLayoutStrategy;
+import csci.ooad.layout.MixedLayoutStrategy;
 import csci.ooad.layout.intf.IMaze;
 import csci.ooad.layout.intf.MazeObserver;
 
 import java.util.List;
+
+
 
 
 public class PolymorphiaDemo {
@@ -195,7 +199,7 @@ public class PolymorphiaDemo {
     }
 
     private static void showDemo(String title, IMaze maze) throws InterruptedException {
-        IRoomLayoutStrategy strategy = MazeLayoutDetector.detectAndCreate(maze);
+        IRoomLayoutStrategy strategy = new MixedLayoutStrategy(MazeLayout.buildAdjacency(maze));
 
         MazeObserver observer = MazeObserver.getNewBuilder("Polymorphia - " + title)
                 .useImageRooms()

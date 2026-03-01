@@ -11,11 +11,7 @@ import java.util.*;
  * Usage:
  *   IRoomLayoutStrategy strategy = MazeLayoutDetector.detectAndCreate(maze);
  */
-public class MazeLayoutDetector {
-
-    public static IRoomLayoutStrategy detectAndCreate(IMaze maze) {
-        return new MixedLayoutStrategy(buildAdjacency(maze));
-    }
+public class MazeLayout {
 
     public static Map<String, Set<String>> buildAdjacency(IMaze maze) {
         Map<String, Set<String>> adj = new HashMap<>();
