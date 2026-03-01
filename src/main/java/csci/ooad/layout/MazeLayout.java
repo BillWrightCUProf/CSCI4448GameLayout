@@ -4,13 +4,6 @@ import csci.ooad.layout.intf.IMaze;
 
 import java.util.*;
 
-/**
- * Creates a layout strategy from a maze.
- * Uses force-directed layout which handles any topology automatically.
- *
- * Usage:
- *   IRoomLayoutStrategy strategy = MazeLayoutDetector.detectAndCreate(maze);
- */
 public class MazeLayout {
 
     public static Map<String, Set<String>> buildAdjacency(IMaze maze) {
