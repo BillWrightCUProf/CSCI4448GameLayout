@@ -190,10 +190,10 @@ public class PolymorphiaDemo {
         record Demo(String title, IMaze maze) {}
 
         List<Demo> demos = List.of(
-//          new Demo("Sequential Maze", createSequentialMaze()),
-//          new Demo("Ring Maze", createRingMaze()),
-//          new Demo("Mixed Maze: chain → ring", createMixedMaze()),
-//          new Demo("Double Ring Maze", createDoubleRingMaze()),
+          new Demo("Sequential Maze", createSequentialMaze()),
+          new Demo("Ring Maze", createRingMaze()),
+          new Demo("Mixed Maze: chain → ring", createMixedMaze()),
+          new Demo("Double Ring Maze", createDoubleRingMaze()),
                 new Demo("Complex Maze: cluster → chain → ring", createComplexMaze())
         );
 
