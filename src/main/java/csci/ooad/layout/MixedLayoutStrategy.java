@@ -3,6 +3,7 @@ package csci.ooad.layout;
 import java.awt.Point;
 import java.util.*;
 
+import csci.ooad.layout.intf.IMaze;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.AsSubgraph;
@@ -23,7 +24,15 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
  */
 public class MixedLayoutStrategy implements IRoomLayoutStrategy {
 
-    private final Map<String, Set<String>> adjacencyMap;
+    public static Map<String, Set<String>> buildAdjacency(IMaze maze) {
+        Map<String, Set<String>> adj = new HashMap<>();
+        for (String room : maze.getRoomNames()) {
+            adj.put(room, new HashSet<>(maze.getNeighborsOf(room)));
+        }
+        return adj;
+    }
+
+    private Map<String, Set<String>> adjacencyMap;
 
     // ─── Group Abstraction ────────────────────────────────────────────────────
 
@@ -64,18 +73,13 @@ public class MixedLayoutStrategy implements IRoomLayoutStrategy {
         }
     }
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
-
-    public MixedLayoutStrategy(Map<String, Set<String>> adjacencyMap) {
-        this.adjacencyMap = adjacencyMap;
-    }
-
     // Entry point: builds graph, identifies groups, orders them, computes positions
     @Override
-    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth,
+    public Map<String, Point> calculateRoomLocations(IMaze maze, Integer panelWidth,
                                                      Integer panelHeight, Integer roomWidth) {
+        adjacencyMap = buildAdjacency(maze);
         Map<String, Point> result = new HashMap<>();
-        Graph<String, DefaultEdge> graph = buildUndirectedGraph(roomNames);
+        Graph<String, DefaultEdge> graph = buildUndirectedGraph(maze.getRoomNames());
 
         // Find rings, clusters, and chains
         List<Group> groups = identifyGroups(graph);

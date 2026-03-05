@@ -199,11 +199,10 @@ public class PolymorphiaDemo {
     }
 
     private static void showDemo(String title, IMaze maze) throws InterruptedException {
-        IRoomLayoutStrategy strategy = new MixedLayoutStrategy(MazeLayout.buildAdjacency(maze));
 
         MazeObserver observer = MazeObserver.getNewBuilder("Polymorphia - " + title)
                 .useImageRooms()
-                .setLayoutStrategy(strategy)
+                .useSmartLayoutStrategy()
                 .setDimension(1200)
                 .setWidth(1600)
                 .setHeight(700)

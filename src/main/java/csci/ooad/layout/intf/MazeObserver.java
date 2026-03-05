@@ -139,6 +139,11 @@ public class MazeObserver implements IMazeObserver {
             return this;
         }
 
+        public Builder useSmartLayoutStrategy() {
+            mazeObserver.layoutStrategy = new MixedLayoutStrategy();
+            return this;
+        }
+
         public Builder useSquareRooms() {
             mazeObserver.roomShape = RoomShape.SQUARE;
             return this;
@@ -227,7 +232,7 @@ public class MazeObserver implements IMazeObserver {
                 roomWidth = Math.min(roomWidth, width);
             }
             roomLocations = layoutStrategy.calculateRoomLocations(
-                    maze.getRoomNames(), width, height, roomWidth);
+                    maze, width, height, roomWidth);
         }
     }
 

@@ -1,5 +1,7 @@
 package csci.ooad.layout;
 
+import csci.ooad.layout.intf.IMaze;
+
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Set;
 
 public class RadialLayoutStrategy implements IRoomLayoutStrategy {
     @Override
-    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
+    public Map<String, Point> calculateRoomLocations(IMaze maze, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
         Map<String, Point> roomLocations = new HashMap<>();
 
         int margin = IRoomLayoutStrategy.MARGIN;
@@ -19,9 +21,9 @@ public class RadialLayoutStrategy implements IRoomLayoutStrategy {
         horizontalAdjustmentRatio = 1.0;
         verticalAdjustmentRatio = 1.0;
 
-        Double radialInterval = 2 * Math.PI / roomNames.size();
+        Double radialInterval = 2 * Math.PI / maze.getRoomNames().size();
         Double currentAngle = 0.0;
-        for (String currentRoomName : roomNames) {
+        for (String currentRoomName : maze.getRoomNames()) {
             Integer x = Math.toIntExact(Math.round(center.x + layoutRadius * Math.cos(currentAngle) * horizontalAdjustmentRatio));
             Integer y = Math.toIntExact(Math.round(center.y - layoutRadius * Math.sin(currentAngle) * verticalAdjustmentRatio));
             Point roomLocation = new Point(x, y);

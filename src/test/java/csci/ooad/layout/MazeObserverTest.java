@@ -85,6 +85,25 @@ class MazeObserverTest {
     }
 
     @Test
+    void testSmartLayoutWithFullyConnectedRooms() {
+        MazeObserver mazeObserver = MazeObserver.getNewBuilder("Adventure Game - Smart Layout")
+                .useSmartLayoutStrategy()
+                .useImageRooms()
+                .setDimension(1200)
+                .setWidth(1600)
+                .setHeight(700)
+                .setRoomDimension(100)
+                .setDelayInSecondsAfterUpdate(1)
+                .build();
+
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(4));
+        mazeObserver.paintToFile("sampleLayouts/FullyConnected4RoomLayout.smart");
+
+        mazeObserver.update(ExampleMaze.createFullyConnectedRooms(16));
+        mazeObserver.paintToFile("sampleLayouts/FullyConnected16RoomLayout.smart");
+    }
+
+    @Test
     void testFullyConnectedRoomsWithCircularLayout() {
         MazeObserver mazeObserver = MazeObserver.getNewBuilder("Polymorphia")
                 .useGridLayoutStrategy()

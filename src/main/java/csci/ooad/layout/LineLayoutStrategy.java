@@ -1,5 +1,7 @@
 package csci.ooad.layout;
 
+import csci.ooad.layout.intf.IMaze;
+
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +10,7 @@ import java.util.Set;
 public class LineLayoutStrategy implements IRoomLayoutStrategy {
 
     @Override
-    public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
+    public Map<String, Point> calculateRoomLocations(IMaze maze, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
         // Layout appears like this
         // --------------------------------------
         //|                                     |
@@ -25,9 +27,9 @@ public class LineLayoutStrategy implements IRoomLayoutStrategy {
 
         // First location in the middle of the screen on the far left
         Point currentLocation = new Point(roomWidth / 2 + margin, panelHeight / 2);
-        Integer rowSpacing = (panelWidth - roomWidth - margin*2) / (roomNames.size() - 1);
+        Integer rowSpacing = (panelWidth - roomWidth - margin*2) / (maze.getRoomNames().size() - 1);
 
-        for (String currentRoomName : roomNames) {
+        for (String currentRoomName : maze.getRoomNames()) {
             roomLocations.put(currentRoomName, currentLocation);
             currentLocation = new Point(currentLocation.x + rowSpacing, panelHeight / 2);
         }

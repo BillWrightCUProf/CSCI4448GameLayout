@@ -1,5 +1,6 @@
 package csci.ooad.layout;
 
+import csci.ooad.layout.intf.MazeObserver;
 import org.junit.jupiter.api.Test;
 
 public class MazeViewerTest {
@@ -9,8 +10,8 @@ public class MazeViewerTest {
 //        MazeObserver mazeObserver = new MazeObserver(
 //                "Adventure Game",
 //                new RadialLayoutStrategy());
-
-        // The observed game has to implement the Observer pattern
+//
+//        // The observed game has to implement the Observer pattern
 //        MazeSubject mazeSubject = new ObservedGame();
 //        mazeSubject.attachObserver(mazeObserver);
 //
