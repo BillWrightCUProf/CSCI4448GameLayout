@@ -1,9 +1,5 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.MazeLayout;
-
-import csci.ooad.layout.IRoomLayoutStrategy;
-import csci.ooad.layout.MixedLayoutStrategy;
 import csci.ooad.layout.intf.IMaze;
 import csci.ooad.layout.intf.MazeObserver;
 
