@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-class Room implements IRoom {
+public class Room implements IRoom {
     public static String[] NAMES = new String[]{
             "Rivendell", "Mordor", "Test", "BagEnd", "Fangorn-Forest", "Swamp", "Crystal Palace", "Pool of Lava",
             "Stalactite Cave", "Goblin's Fountain", "Dragon's Den", "Troll Bridge",
@@ -35,6 +35,18 @@ class Room implements IRoom {
             }
         }
         return Set.copyOf(rooms);
+    }
+
+    public static Set<Room> createConnectedRooms(String... roomNames) {
+        Set<Room> rooms = new HashSet<>();
+        for (String roomName : roomNames) {
+            Room currentRoom = new Room(roomName);
+            for (Room otherRoom : rooms) {
+                currentRoom.connect(otherRoom);
+            }
+            rooms.add(currentRoom);
+        }
+        return rooms;
     }
 
     public static Set<Room> createFullyConnectedRooms(Integer numRooms) {

@@ -15,7 +15,7 @@ public class ExampleMaze implements IMaze {
     private final Set<Room> rooms;
     private final Map<String, Room> roomMap = new HashMap<>();
 
-    private ExampleMaze(Set<Room> rooms) {
+    public ExampleMaze(Set<Room> rooms) {
         this.rooms = rooms;
         for (Room room : rooms) {
             roomMap.put(room.getName(), room);

@@ -26,7 +26,12 @@ public class LineLayoutStrategy implements IRoomLayoutStrategy {
         int margin = IRoomLayoutStrategy.MARGIN;
 
         // First location in the middle of the screen on the far left
-        Point currentLocation = new Point(roomWidth / 2 + margin, panelHeight / 2);
+        Point currentLocation = new Point(roomWidth / 2 + margin, panelHeight / 2 + margin);
+        if (maze.getRoomNames().size() == 1) {
+            roomLocations.put(maze.getRoomNames().iterator().next(), currentLocation);
+            return roomLocations;
+        }
+
         Integer rowSpacing = (panelWidth - roomWidth - margin*2) / (maze.getRoomNames().size() - 1);
 
         for (String currentRoomName : maze.getRoomNames()) {
