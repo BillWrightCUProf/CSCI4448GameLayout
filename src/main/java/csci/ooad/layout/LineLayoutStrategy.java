@@ -21,10 +21,11 @@ public class LineLayoutStrategy implements IRoomLayoutStrategy {
         //|                                     |
         // --------------------------------------
         Map<String, Point> roomLocations = new HashMap<>();
+        int margin = IRoomLayoutStrategy.MARGIN;
 
         // First location in the middle of the screen on the far left
-        Point currentLocation = new Point(roomWidth / 2, panelHeight / 2);
-        Integer rowSpacing = (panelWidth - roomWidth) / (roomNames.size() - 1);
+        Point currentLocation = new Point(roomWidth / 2 + margin, panelHeight / 2);
+        Integer rowSpacing = (panelWidth - roomWidth - margin*2) / (roomNames.size() - 1);
 
         for (String currentRoomName : roomNames) {
             roomLocations.put(currentRoomName, currentLocation);

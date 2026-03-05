@@ -76,7 +76,7 @@ public class GamePanel extends JPanel {
 
         paintRoomName(g2, roomName, upperRightCorner);
         paintRoomContents(g2, roomName, upperRightCorner);
-        paintCharacters(g2, roomName, roomCenter);
+        paintCharacters(g2, roomName, new Point(roomCenter));
     }
 
     private void paintCharacters(Graphics2D g2, String roomName, Point imageLocation) {

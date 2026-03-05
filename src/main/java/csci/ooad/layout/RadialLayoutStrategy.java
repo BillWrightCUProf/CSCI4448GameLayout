@@ -10,11 +10,14 @@ public class RadialLayoutStrategy implements IRoomLayoutStrategy {
     public Map<String, Point> calculateRoomLocations(Set<String> roomNames, Integer panelWidth, Integer panelHeight, Integer roomWidth) {
         Map<String, Point> roomLocations = new HashMap<>();
 
+        int margin = IRoomLayoutStrategy.MARGIN;
         Point center = new Point(panelWidth/2, panelHeight/2);
 
-        Integer layoutRadius = Math.min(panelWidth, panelHeight) / 2 - (roomWidth/2);
+        Integer layoutRadius = Math.min(panelWidth, panelHeight) / 2 - (roomWidth/2) - margin*4;
         Double horizontalAdjustmentRatio = (double) (panelWidth - roomWidth) / layoutRadius / 2;
         Double verticalAdjustmentRatio = (double) (panelHeight - roomWidth) / layoutRadius / 2;
+        horizontalAdjustmentRatio = 1.0;
+        verticalAdjustmentRatio = 1.0;
 
         Double radialInterval = 2 * Math.PI / roomNames.size();
         Double currentAngle = 0.0;
