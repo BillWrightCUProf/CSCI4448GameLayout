@@ -10,28 +10,34 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MazeObserver implements IMazeObserver {
+public class MazeObserver implements IGameObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
+    public static final int DEFAULT_WIDTH = 800;
+    public static final int DEFAULT_HEIGHT = 800;
+    public static final int DEFAULT_UPDATE_DELAY_IN_SECONDS = 1;
 
     static {
         System.out.println("MazeObserver class is being loaded");
     }
 
+    private final IMazeSubject mazeSubject;
+
     JFrame window;
     GamePanel gamePanel;
-    StatusPanel statusPanel = new StatusPanel(new ArrayList<>());
+    StatusPanel statusPanel = new StatusPanel("");
     JPanel mainPanel = new JPanel(new GridLayout(2, 1));
 
     RoomShape roomShape = RoomShape.IMAGE;
     IRoomLayoutStrategy layoutStrategy = new RadialLayoutStrategy();
-    Integer width = 800;
-    Integer height = 800;
+    Integer width = DEFAULT_WIDTH;
+    Integer height = DEFAULT_HEIGHT;
     Integer roomWidth;
     Double ratioOfSpacingToRoomWidth = 1.0;
-    Integer delayInSecondsAfterDisplayUpdate = 1;
+    Integer delayInSecondsAfterDisplayUpdate = DEFAULT_UPDATE_DELAY_IN_SECONDS;
     Color backgroundColor;
     Color roomBackgroundColor;
     Color textColor;
@@ -40,15 +46,16 @@ public class MazeObserver implements IMazeObserver {
     Map<String, Image> characterImages = new HashMap<>();
     ImageFactory imageFactory;
 
-    public static Builder getNewBuilder(String title) {
-        return new Builder(title);
+    public static Builder getNewBuilder(IMazeSubject mazeSubject, String title) {
+        return new Builder(mazeSubject, title);
     }
 
-    public MazeObserver() {
-        this("Adventure Game");
+    public MazeObserver(IMazeSubject mazeSubject) {
+        this(mazeSubject,"Adventure Game");
     }
 
-    public MazeObserver(String title) {
+    public MazeObserver(IMazeSubject mazeSubject, String title) {
+        this.mazeSubject = mazeSubject;
         window = new JFrame(title);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
@@ -62,12 +69,12 @@ public class MazeObserver implements IMazeObserver {
     public static class Builder implements IMazeObserverBuilder {
         MazeObserver mazeObserver;
 
-        public Builder() {
-            mazeObserver = new MazeObserver("Adventure Game");
+        public Builder(IMazeSubject mazeSubject) {
+            mazeObserver = new MazeObserver(mazeSubject,"Adventure Game");
         }
 
-        public Builder(String title) {
-            mazeObserver = new MazeObserver(title);
+        public Builder(IMazeSubject mazeSubject, String title) {
+            mazeObserver = new MazeObserver(mazeSubject, title);
         }
 
         public Builder setDimension(Integer dimension) {
@@ -175,14 +182,18 @@ public class MazeObserver implements IMazeObserver {
     }
 
     @Override
-    public void update(IMaze maze, List<String> statusMessages) {
+    public void update(String statusMessage) {
+        update(mazeSubject.getMaze(), statusMessage);
+    }
+
+    public void update(IMaze maze, String statusMessage) {
         // TODO: Figure out why I have to remove this component and add it again. Why can't I just
         // update the status message? When I try that it doesn't display at all. I can't just do this:
         //  statusPanel.setStatus(statusMessages);
         if (statusPanel != null) {
             window.remove(statusPanel);
         }
-        statusPanel = new StatusPanel(statusMessages);
+        statusPanel = new StatusPanel(statusMessage);
         window.add(statusPanel, BorderLayout.NORTH);
 
         // If the maze is null, then just display the current state, plus the new status messages
@@ -300,11 +311,11 @@ public class MazeObserver implements IMazeObserver {
 //            logger.warn("Display was interrupted...");
 //        }
 //    }
-
-    // Create an animation to move a character component (create
-    // this class) from its current location to a new location. It
-    // should move along a straight line between the points.
-    // The animation stops when the character is at the ending position.
+//
+//     Create an animation to move a character component (create
+//     this class) from its current location to a new location. It
+//     should move along a straight line between the points.
+//     The animation stops when the character is at the ending position.
 //    def createAnimation(Component characterComponent,
 //                        Location ending,
 //                        Integer durationMilliseconds, Integer updateIntervalMilliseconds) {

@@ -1,23 +1,20 @@
 package csci.ooad.layout.example;
 
-import csci.ooad.layout.intf.IMaze;
-import csci.ooad.layout.intf.IMazeObserver;
-import csci.ooad.layout.intf.IMazeSubject;
-import csci.ooad.layout.intf.MazeObserver;
+import csci.ooad.layout.intf.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExampleSubject implements IMazeSubject {
+public class ExampleSubject implements IGame, IMazeSubject {
     IMaze maze;
 
-    List<IMazeObserver> observers = new ArrayList<>();
+    List<IGameObserver> observers = new ArrayList<>();
 
-    public void attach(IMazeObserver observer) {
+    public void attach(IGameObserver observer) {
         observers.add(observer);
     }
 
-    public List<IMazeObserver> getObservers() {
+    public List<IGameObserver> getObservers() {
         return observers;
     }
 
@@ -47,30 +44,30 @@ public class ExampleSubject implements IMazeSubject {
         }
     }
 
-    private IMaze getMaze() {
+    @Override
+    public IMaze getMaze() {
         return maze;
     }
 
     private void notifyObservers(String statusMessage) {
-//        notifyObservers(List.of(statusMessage));
-        for (IMazeObserver observer : getObservers()) {
+        for (IGameObserver observer : getObservers()) {
             observer.update(statusMessage);
-        }
-    }
-
-    private void notifyObservers(List<String> statusMessages) {
-        for (IMazeObserver observer : getObservers()) {
-            observer.update(getMaze(), statusMessages);
         }
     }
 
     static public void main(String... args) throws InterruptedException {
         ExampleSubject game = new ExampleSubject();
-        MazeObserver observer = MazeObserver.getNewBuilder("Example Game")
+        MazeObserver observer = MazeObserver.getNewBuilder(game,"Example Game")
                 .useCircleRooms()
                 .useRadialLayoutStrategy()
                 .build();
         game.attach(observer);
         game.playGameWithChangingMazeShape();
+    }
+
+    static public ExampleSubject createRoomGrid(Integer numRooms) {
+        ExampleSubject game = new ExampleSubject();
+        game.maze = ExampleMaze.createRoomGrid(numRooms);
+        return game;
     }
 }

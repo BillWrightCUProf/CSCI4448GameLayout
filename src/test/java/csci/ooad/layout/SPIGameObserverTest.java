@@ -1,8 +1,6 @@
 package csci.ooad.layout;
 
-import csci.ooad.layout.intf.IMazeObserver;
-import csci.ooad.layout.intf.IMazeObserverBuilder;
-import csci.ooad.layout.intf.MazeObserver;
+import csci.ooad.layout.intf.IGameObserver;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -10,7 +8,7 @@ import java.util.ServiceLoader;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SPIMazeObserverTest {
+public class SPIGameObserverTest {
 
 
     @Test
@@ -34,11 +32,11 @@ public class SPIMazeObserverTest {
 
     @Test
     void getMazeObserverViaSPI() {
-        ServiceLoader<IMazeObserver> loader = ServiceLoader.load(IMazeObserver.class);
-        Iterator<IMazeObserver> it = loader.iterator();
+        ServiceLoader<IGameObserver> loader = ServiceLoader.load(IGameObserver.class);
+        Iterator<IGameObserver> it = loader.iterator();
 
         while (it.hasNext()) {
-            IMazeObserver mazeObserver = it.next();
+            IGameObserver mazeObserver = it.next();
             System.out.println("Found IMazeObserver implementation: " + mazeObserver.getClass().getName());
             assertNotNull(mazeObserver);
         }

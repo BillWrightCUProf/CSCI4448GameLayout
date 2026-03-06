@@ -2,7 +2,7 @@ package csci.ooad.layout.inttest;
 
 import csci.ooad.layout.example.ExampleSubject;
 import csci.ooad.layout.intf.MazeObserver;
-import csci.ooad.layout.intf.IMazeObserver;
+import csci.ooad.layout.intf.IGameObserver;
 import org.junit.jupiter.api.Test;
 import java.util.ServiceLoader;
 
@@ -28,9 +28,9 @@ class ExampleSubjectTest {
     @Test
     void testPlaySPILayoutsOnOneRoomMaze() throws InterruptedException {
         ExampleSubject game = new ExampleSubject();
-        ServiceLoader<IMazeObserver> loader = ServiceLoader.load(IMazeObserver.class);
+        ServiceLoader<IGameObserver> loader = ServiceLoader.load(IGameObserver.class);
 
-        for (IMazeObserver mazeObserver : loader) {
+        for (IGameObserver mazeObserver : loader) {
             System.out.println("Found IMazeObserver implementation: " + mazeObserver.getClass().getName());
             game.attach(mazeObserver);
         }
