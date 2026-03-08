@@ -1,0 +1,91 @@
+plugins {
+    id 'java-library'
+    id 'com.gradleup.shadow' version '8.3.5'
+}
+
+group = 'io.github.billwrightcuprof'
+version = '4.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(":GameObserverSPI")
+
+    implementation "org.slf4j:slf4j-api:2.0.17"
+    implementation 'ch.qos.logback:logback-classic:1.5.30'
+
+    implementation 'org.jgrapht:jgrapht-core:1.5.2'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.10.0'
+
+    testImplementation project(":AlternateMazeObserver")
+    testImplementation project(":GameObserver")
+    testImplementation project(":AudibleGameObserver")
+
+    // BDD testing libraries
+    testImplementation 'io.cucumber:cucumber-picocontainer:7.21.1'
+    testImplementation 'io.cucumber:cucumber-java:7.21.1'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.21.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('verifyGameObserverSpiJars') {
+    group = 'verification'
+    description = 'Builds observer jars and prints the IGameObserverProvider SPI registration found in each jar.'
+
+    def observerProjects = [
+            project(':MazeObserver'),
+            project(':AlternateMazeObserver'),
+            project(':GameObserver'),
+            project(':AudibleGameObserver')
+    ]
+
+    dependsOn(observerProjects.collect { it.tasks.named('jar') })
+
+    doLast {
+        String serviceEntry = 'META-INF/services/ooad.gameobserver.intf.IGameObserverProvider'
+
+        observerProjects.each { observerProject ->
+            File jarFile = observerProject.tasks.named('jar').get().archiveFile.get().asFile
+
+            println ""
+            println "=== ${observerProject.path} ==="
+            println "JAR: ${jarFile}"
+
+            if (!jarFile.exists()) {
+                println "  Jar file does not exist."
+                return
+            }
+
+            def jar = new java.util.jar.JarFile(jarFile)
+            try {
+                def entry = jar.getJarEntry(serviceEntry)
+                if (entry == null) {
+                    println "  MISSING: ${serviceEntry}"
+                } else {
+                    println "  FOUND: ${serviceEntry}"
+                    String contents = jar.getInputStream(entry).getText('UTF-8').trim()
+                    println "  CONTENTS:"
+                    contents.readLines().each { line ->
+                        println "    ${line}"
+                    }
+                }
+            } finally {
+                jar.close()
+            }
+        }
+    }
+}
+
+tasks.named('shadowJar') {
+    archiveClassifier.set('all')
+    mergeServiceFiles()
+}

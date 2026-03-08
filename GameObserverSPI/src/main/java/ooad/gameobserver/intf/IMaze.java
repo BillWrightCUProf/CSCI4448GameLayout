@@ -1,0 +1,11 @@
+package ooad.gameobserver.intf;
+
+import java.util.List;
+import java.util.Set;
+
+public interface IMaze {
+    Set<String> getRoomNames();
+    Set<String> getNeighborsOf(String roomName);
+    List<String> getArtifacts(String roomName);
+    List<String> getCharacters(String roomName);
+}

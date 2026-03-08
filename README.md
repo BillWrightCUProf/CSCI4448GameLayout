@@ -79,7 +79,7 @@ create the observers list.
 * Add in icons for characters and draw them in the rooms
 * Run on a separate thread? Or delay after drawing maze
 
-![FullyConnected16RoomLayout.grid.png](sampleLayouts/FullyConnected16RoomLayout.grid.png)
+![FullyConnected16RoomLayout.grid.png](MazeObserver/sampleLayouts/FullyConnected16RoomLayout.grid.png)
 
 
 ### TODO:
