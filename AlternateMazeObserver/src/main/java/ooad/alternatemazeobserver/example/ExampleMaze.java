@@ -60,4 +60,9 @@ public class ExampleMaze implements IMaze {
         }
         return roomMap.get(room).getCharacters();
     }
+
+    @Override
+    public String toString() {
+        return roomMap.values().stream().map(Room::toString).reduce("", (a, b) -> a + "\n" + b);
+    }
 }

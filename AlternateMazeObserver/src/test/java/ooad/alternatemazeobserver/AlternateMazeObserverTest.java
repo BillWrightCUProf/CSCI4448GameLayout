@@ -1,5 +1,6 @@
 package ooad.alternatemazeobserver;
 
+import ooad.gameobserver.intf.IGameObserver;
 import ooad.gameobserver.intf.IMazeSubject;
 import ooad.alternatemazeobserver.example.ExampleSubject;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ class AlternateMazeObserverTest {
     @Test
     void testAlternateMazeObserver() {
         IMazeSubject subject = new ExampleSubject();
-        AlternateMazeObserver observer = new AlternateMazeObserver(subject);
+        IGameObserver observer = new AlternateMazeObserver(subject);
         observer.update("Game is over");
     }
 

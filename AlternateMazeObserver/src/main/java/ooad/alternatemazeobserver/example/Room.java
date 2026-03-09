@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 class Room implements IRoom {
     public static String[] NAMES = new String[]{
-            "Rivendell", "Mordor", "Test", "BagEnd", "Fangorn-Forest", "Swamp", "Crystal Palace", "Pool of Lava",
+            "Rivendell", "Mordor", "BagEnd", "Fangorn-Forest", "Swamp", "Crystal Palace", "Pool of Lava",
             "Stalactite Cave", "Goblin's Fountain", "Dragon's Den", "Troll Bridge",
             "Dungeon", "Pit of Despair", "Sanctuary",
             "Den of Souls", "Map Room", "Room of Horrors"
@@ -29,10 +30,10 @@ class Room implements IRoom {
         }
         for (Integer i = 0; i < rooms.size(); i++) {
             if (i % dimension < (dimension - 1)) {
-                rooms.get(i).addNeighbor(rooms.get(i + 1));
+                rooms.get(i).connect(rooms.get(i + 1));
             }
             if (i < dimension * (dimension - 1)) {
-                rooms.get(i).addNeighbor(rooms.get(i + dimension));
+                rooms.get(i).connect(rooms.get(i + dimension));
             }
         }
         return Set.copyOf(rooms);
@@ -64,7 +65,14 @@ class Room implements IRoom {
     }
 
     public String toString() {
-        return this.name;
+        return new StringBuilder(this.name)
+                .append("\n\tneighbors: ")
+                .append(this.neighbors.stream().map(Room::getName).collect(Collectors.joining(",")))
+                .append("\n\tcharacters: ")
+                .append(String.join(",", this.getCharacters()))
+                .append("\n\tartifacts: ")
+                .append(String.join(",", this.getArtifacts()))
+                .toString();
     }
 
     public List<String> getArtifacts() {
