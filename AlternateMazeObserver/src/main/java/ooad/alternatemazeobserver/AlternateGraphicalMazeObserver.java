@@ -8,8 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AlternateGraphicalMazeObserver implements IGameObserver {
-    public static final int DEFAULT_WIDTH = 800;
-    public static final int DEFAULT_HEIGHT = 800;
+    public static final int MINIMUM_WIDTH = 500;
+    private static final String GAME_END_MESSAGE = "game end";
     public static int DEFAULT_UPDATE_DELAY_IN_SECONDS = 1;
 
     static {
@@ -23,18 +23,16 @@ public class AlternateGraphicalMazeObserver implements IGameObserver {
     StatusPanel statusPanel = new StatusPanel("");
     JPanel mainPanel = new JPanel(new GridLayout(2, 1));
 
-    Integer width = DEFAULT_WIDTH;
-    Integer height = DEFAULT_HEIGHT;
     Integer delayInSecondsAfterDisplayUpdate = DEFAULT_UPDATE_DELAY_IN_SECONDS;
     Color backgroundColor;
     Color textColor;
 
     public AlternateGraphicalMazeObserver() {
-        this(null,"Adventure Game");
+        this(null, "Adventure Game");
     }
 
     public AlternateGraphicalMazeObserver(IMazeSubject mazeSubject) {
-        this(mazeSubject,"Adventure Game");
+        this(mazeSubject, "Adventure Game");
     }
 
     public AlternateGraphicalMazeObserver(IMazeSubject mazeSubject, String title) {
@@ -46,7 +44,7 @@ public class AlternateGraphicalMazeObserver implements IGameObserver {
         mainPanel.add(statusPanel, BorderLayout.NORTH);
         statusPanel.setSize(window.getWidth(), 100);
         mainPanel.add(mazePanel, BorderLayout.SOUTH);
-        mazePanel.setSize(window.getWidth(), window.getHeight()-110);
+        mazePanel.setSize(window.getWidth(), window.getHeight() - 110);
     }
 
     void setTitle(String title) {
@@ -68,11 +66,19 @@ public class AlternateGraphicalMazeObserver implements IGameObserver {
 
         window.pack();
         window.setVisible(true);
-        window.setSize((int)(window.getWidth() * 1.2), (int)(window.getHeight() * 1.2));
+
+        // Ensure some white space around the maze for better readability
+        int width = Math.max((int) (window.getWidth() * 1.2), MINIMUM_WIDTH);
+        window.setSize(width, (int) (window.getHeight() * 1.2));
+
         try {
             Thread.sleep(delayInSecondsAfterDisplayUpdate * 1000);
         } catch (InterruptedException ex) {
             System.out.println("Display was interrupted...");
+        }
+
+        if (statusMessage.toLowerCase().contains(GAME_END_MESSAGE)) {
+            JOptionPane.showMessageDialog(null, "Click OK to continue");
         }
     }
 

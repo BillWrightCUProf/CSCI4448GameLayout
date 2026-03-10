@@ -22,6 +22,7 @@ public class MazeObserver implements IGameObserver {
     public static final int DEFAULT_WIDTH = 800;
     public static final int DEFAULT_HEIGHT = 800;
     public static final int DEFAULT_UPDATE_DELAY_IN_SECONDS = 1;
+    private static final String GAME_END_MESSAGE = "game end";
 
     static {
         System.out.println("MazeObserver class is being loaded");
@@ -208,6 +209,10 @@ public class MazeObserver implements IGameObserver {
             Thread.sleep(delayInSecondsAfterDisplayUpdate * 1000);
         } catch (InterruptedException ex) {
             logger.warn("Display was interrupted...");
+        }
+
+        if (statusMessage.toLowerCase().contains(GAME_END_MESSAGE)) {
+            JOptionPane.showMessageDialog(null, "Click OK to continue");
         }
     }
 
