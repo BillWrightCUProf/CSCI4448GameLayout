@@ -68,6 +68,7 @@ public class AlternateGraphicalMazeObserver implements IGameObserver {
 
         window.pack();
         window.setVisible(true);
+        window.setSize((int)(window.getWidth() * 1.2), (int)(window.getHeight() * 1.2));
         try {
             Thread.sleep(delayInSecondsAfterDisplayUpdate * 1000);
         } catch (InterruptedException ex) {
