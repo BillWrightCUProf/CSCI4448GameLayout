@@ -32,7 +32,7 @@ class ImageFactoryTest {
     void testLoadingOfRoomImagesFromJarFile() {
         ImageFactory imageFactory = ImageFactory.getInstance();
         String homeDir = System.getProperty("user.home");
-        String jarFilePath = homeDir + "/iCloud/Documents/cu-courses/csci4448/Projects/CSCI4448GameLayout/MazeObserver/build/libs/MazeObserver-4.0.0.jar";
+        String jarFilePath = homeDir + "/iCloud/Documents/cu-courses/csci4448/Projects/CSCI4448GameLayout/MazeObserver/build/libs/MazeObserver-4.1.4.jar";
         assert new java.io.File(jarFilePath).exists();
         List<String> imageNames = imageFactory.getAllMatchingFileNamesFromJarFile(jarFilePath, "roomImages", "png");
         assertTrue(imageNames.size() > 5);

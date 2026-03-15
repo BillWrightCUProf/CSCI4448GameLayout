@@ -55,6 +55,7 @@ public class SPIGameObserverTest {
         Set<String> expected = Set.of(
                 "ooad.mazeobserver.GameObserverProvider",
                 "ooad.alternatemazeobserver.AlternateMazeObserverProvider",
+                "ooad.alternatemazeobserver.AlternateGraphicalMazeObserverProvider",
                 "ooad.gameobserver.GameObserverProvider",
                 "ooad.audibleobserver.AudibleObserverProvider"
         );

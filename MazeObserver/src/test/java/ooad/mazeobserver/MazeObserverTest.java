@@ -106,7 +106,7 @@ class MazeObserverTest {
     }
 
     @Test
-    void testFullyConnectedRoomsWithCircularLayout() {
+    void testMazeWithCustomLayout() {
         IMazeSubject maze = ExampleSubject.createRoomGrid(7);
         MazeObserver mazeObserver = MazeObserver.getNewBuilder(maze,"Polymorphia")
                 .useGridLayoutStrategy()

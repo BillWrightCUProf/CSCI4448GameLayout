@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
+import static java.util.Collections.replaceAll;
+import static ooad.mazeobserver.ImageFactory.normalizeImageName;
+
 public class GamePanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(GamePanel.class);
 
@@ -58,7 +61,7 @@ public class GamePanel extends JPanel {
         paintMaze(g2);
     }
 
-    void paintRoomCenteredAt(Graphics2D g2, Point roomCenter, String roomName) {
+    void paintRoomCenteredAt(Graphics2D g2, Point roomCenter, String roomName, int numNeighbors) {
         g2.setColor(roomBackgroundColor);
         Point upperRightCorner = new Point(roomCenter.x - roomDimension / 2, roomCenter.y - roomDimension / 2);
         switch (roomShape) {
@@ -73,7 +76,8 @@ public class GamePanel extends JPanel {
                 break;
         }
 
-        paintRoomName(g2, roomName, upperRightCorner);
+        String nameWithNeighborCount = roomName + " (" + numNeighbors + ")";
+        paintRoomName(g2, nameWithNeighborCount, upperRightCorner);
         paintRoomContents(g2, roomName, upperRightCorner);
         paintCharacters(g2, roomName, new Point(roomCenter));
     }
@@ -83,8 +87,11 @@ public class GamePanel extends JPanel {
         Point upperRightCorner = new Point(imageLocation.x + roomDimension / 2, imageLocation.y - roomDimension / 2);
 
         for (String characterName : maze.getCharacters(roomName)) {
-            Image characterImage = characterImages.get(characterName.toLowerCase());
+            String imageKey = normalizeImageName(characterName);
+            logger.info("Trying to find an image with key: {}", imageKey);
+            Image characterImage = characterImages.get(imageKey);
             if (characterImage == null) {
+                logger.info("No image found for character: {}", characterName);
                 paintCharacterName(g2, characterName, upperRightCorner);
                 upperRightCorner.y += fontHeight + 2;
             } else {
@@ -127,7 +134,8 @@ public class GamePanel extends JPanel {
     void paintMaze(Graphics2D g2) {
         drawRoomConnections(g2);
         for (String currentRoom : roomLocations.keySet()) {
-            paintRoomCenteredAt(g2, roomLocations.get(currentRoom), currentRoom);
+            int numNeighbors = maze.getNeighborsOf(currentRoom).size();
+            paintRoomCenteredAt(g2, roomLocations.get(currentRoom), currentRoom, numNeighbors);
         }
     }
 

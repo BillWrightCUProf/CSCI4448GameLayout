@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ooad.mazeobserver.ImageFactory.normalizeImageName;
+
 public class MazeObserver implements IGameObserver {
     private static final Logger logger = LoggerFactory.getLogger(MazeObserver.class);
     public static final int DEFAULT_WIDTH = 800;
@@ -266,10 +268,12 @@ public class MazeObserver implements IGameObserver {
         if (characterImages.isEmpty()) {
             for (String room : maze.getRoomNames()) {
                 for (String characterName : maze.getCharacters(room)) {
-                    String lowerCaseName = characterName.toLowerCase();
-                    Image image = imageFactory.getNextCharacterImage(lowerCaseName);
+                    String normalizedName = normalizeImageName(characterName);
+                    Image image = imageFactory.getNextCharacterImage(normalizedName);
                     if (image != null) {
-                        characterImages.put(lowerCaseName, imageFactory.getNextCharacterImage(lowerCaseName));
+                        characterImages.put(normalizedName, image);
+                    } else {
+                        logger.warn("No image found for character: {}", characterName);
                     }
                 }
             }

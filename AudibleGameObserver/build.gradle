@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'io.github.billwrightcuprof'
-version = '4.0.0'
+version = '4.0.1'
 
 repositories {
     mavenCentral()
@@ -13,8 +13,8 @@ repositories {
 dependencies {
     implementation project(":GameObserverSPI")
 
-    implementation "org.slf4j:slf4j-api:2.0.17"
-    implementation 'ch.qos.logback:logback-classic:1.5.30'
+    compileOnly "org.slf4j:slf4j-api:2.0.17"
+    testRuntimeOnly "ch.qos.logback:logback-classic:1.5.32"
 
     // library to speak strings: Free Text-To-Speech
     implementation 'net.sf.sociaal:freetts:1.2.2'

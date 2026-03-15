@@ -4,17 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import java.awt.Image;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -41,15 +37,21 @@ public class ImageFactory {
     }
 
     private void loadCharacterImages() {
-        // First, load a default hard-coded image so that we never have zero images
-        loadImage("arwen.png", characterImages, "characterImages");
         loadImages(characterImages, "characterImages");
+        if (characterImages.isEmpty()) {
+            logger.warn("Automatic loading of character images failed!");
+            // load a default hard-coded image so that we never have zero images
+            loadImage("arwen.png", characterImages, "characterImages");
+        }
     }
 
     private void loadRoomImages() {
-        // First, load a default hard-coded image so that we never have zero images
-        loadImage("rivendell-circle.png", roomImages, "roomImages");
         loadImages(roomImages, "roomImages");
+        if (roomImages.isEmpty()) {
+            logger.warn("Automatic loading of room images failed!");
+            // load a default hard-coded image so that we never have zero images
+            loadImage("rivendell-circle.png", roomImages, "roomImages");
+        }
     }
 
     private void loadImages(Map<String, Image> images, String dirName) {
@@ -60,7 +62,6 @@ public class ImageFactory {
         } else {
             for (String imageFileName : imageFileNames) {
                 loadImage(imageFileName, images, dirName);
-                logger.info("image file {} loaded...", imageFileName);
             }
         }
     }
@@ -103,10 +104,16 @@ public class ImageFactory {
 
     private void loadImage(String fileName, Map<String, Image> images, String dirName) {
         String imageName = fileName.split("-")[0].split("\\.")[0].toLowerCase();
+        if (images.containsKey(imageName)) {
+            return;
+        }
+        String imageFileName = "/" + dirName + "/" + fileName;
         try {
             images.put(
                     imageName,
-                    ImageIO.read(getClass().getResourceAsStream("/" + dirName + "/" + fileName)));
+                    ImageIO.read(getClass().getResourceAsStream(imageFileName)));
+            logger.info("image file {} loaded at key {}", imageFileName, imageName);
+
         } catch (java.io.IOException | IllegalArgumentException e) {
             logger.warn("Could not load image: {}", fileName, e);
         }
@@ -199,5 +206,9 @@ public class ImageFactory {
         List<String> keys = characterImages.keySet().stream().toList();
         characterNameIndex = (characterNameIndex + 1) % characterImages.size();
         return keys.get(characterNameIndex);
+    }
+
+    public static String normalizeImageName(String name) {
+        return name.replaceAll("[^A-Za-z].*$", "").toLowerCase();
     }
 }
