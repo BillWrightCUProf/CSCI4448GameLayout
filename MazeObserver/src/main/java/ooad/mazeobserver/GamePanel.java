@@ -6,17 +6,19 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import static java.util.Collections.replaceAll;
 import static ooad.mazeobserver.ImageFactory.normalizeImageName;
 
 public class GamePanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(GamePanel.class);
 
-
     static Font ROOM_NAME_FONT = new Font("Lucida Grande", Font.BOLD, 13);
     static Font ROOM_CONTENTS_FONT = new Font("Lucida Grande", Font.ITALIC, 13);
+    static Font CHARACTER_LIST_FONT = new Font("Lucida Grande", Font.BOLD, 18);
 
     Integer roomDimension;
     static Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
@@ -33,18 +35,24 @@ public class GamePanel extends JPanel {
     Color roomBackgroundColor = DEFAULT_ROOM_COLOR;
     Color textColor = DEFAULT_TEXT_COLOR;
 
+    private final JList<String> activeCharactersList = new JList<>();
+    private final JScrollPane activeCharactersScrollPane = new JScrollPane(activeCharactersList);
 
     public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, Map<String, Image> characterImages,
                      RoomShape roomShape, Integer width, Integer height, Integer roomRadius) {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(DEFAULT_BACKGROUND_COLOR);
         this.setDoubleBuffered(true);
+        this.setLayout(new BorderLayout());
+
         this.maze = maze;
         this.roomLocations = roomLocations;
         this.roomImages = roomImages;
         this.characterImages = characterImages;
         this.roomShape = roomShape;
         this.roomDimension = roomRadius;
+
+        configureActiveCharactersList(width, height);
     }
 
     public void setRoomBackground(Color color) {
@@ -59,6 +67,63 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         paintMaze(g2);
+    }
+
+    private void configureActiveCharactersList(Integer panelWidth, Integer panelHeight) {
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        for (String characterName : getSortedActiveCharacterNames()) {
+            listModel.addElement(characterName);
+        }
+
+        activeCharactersList.setModel(listModel);
+        activeCharactersList.setFont(CHARACTER_LIST_FONT);
+        activeCharactersList.setFocusable(false);
+
+        activeCharactersScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        activeCharactersScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        Dimension listSize = getActiveCharactersListPreferredSize(panelWidth, panelHeight);
+        activeCharactersScrollPane.setPreferredSize(listSize);
+        activeCharactersScrollPane.setMaximumSize(listSize);
+
+        JPanel topRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
+        topRightPanel.setOpaque(false);
+        topRightPanel.add(activeCharactersScrollPane);
+
+        this.add(topRightPanel, BorderLayout.NORTH);
+    }
+
+    private List<String> getSortedActiveCharacterNames() {
+        Set<String> sortedNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        for (String roomName : maze.getRoomNames()) {
+            sortedNames.addAll(maze.getCharacters(roomName));
+        }
+        return sortedNames.stream().toList();
+    }
+
+    private Dimension getActiveCharactersListPreferredSize(Integer panelWidth, Integer panelHeight) {
+        FontMetrics metrics = activeCharactersList.getFontMetrics(activeCharactersList.getFont());
+
+        int maxTextWidth = 0;
+        ListModel<String> model = activeCharactersList.getModel();
+        for (int i = 0; i < model.getSize(); i++) {
+            maxTextWidth = Math.max(maxTextWidth, metrics.stringWidth(model.getElementAt(i)));
+        }
+
+        int widthPadding = 24;
+        int scrollBarAllowance = 18;
+        int preferredWidth = maxTextWidth + widthPadding + scrollBarAllowance;
+
+        int rowHeight = Math.max(metrics.getHeight(), activeCharactersList.getFixedCellHeight() > 0
+                ? activeCharactersList.getFixedCellHeight()
+                : metrics.getHeight());
+        int preferredHeight = Math.max(rowHeight + 8, model.getSize() * rowHeight + 8);
+        int maxHeight = Math.max(panelHeight / 3, rowHeight + 8);
+
+        return new Dimension(
+                Math.min(preferredWidth, panelWidth / 2),
+                Math.min(preferredHeight, maxHeight)
+        );
     }
 
     void paintRoomCenteredAt(Graphics2D g2, Point roomCenter, String roomName, int numNeighbors) {

@@ -112,9 +112,9 @@ class MazeObserverTest {
                 .useGridLayoutStrategy()
                 .useImageRooms()
                 .setDelayInSecondsAfterUpdate(5)
-                .setRoomDimension(350)
-                .setWidth(3000)
-                .setHeight(1500)
+                .setRoomDimension(250)
+                .setWidth(2000)
+                .setHeight(1000)
                 .setRatioOfSpacingToRoomWidth(0.7)
                 .build();
 
