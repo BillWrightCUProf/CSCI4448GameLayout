@@ -34,8 +34,7 @@ public class MazeObserver implements IGameObserver {
 
     JFrame window;
     GamePanel gamePanel;
-    StatusPanel statusPanel = new StatusPanel("");
-    JPanel mainPanel = new JPanel(new GridLayout(2, 1));
+    StatusPanel statusPanel;
 
     RoomShape roomShape = RoomShape.IMAGE;
     IRoomLayoutStrategy layoutStrategy = new RadialLayoutStrategy();
@@ -69,21 +68,17 @@ public class MazeObserver implements IGameObserver {
         window = new JFrame(title);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setLocationRelativeTo(null);
-        statusPanel.setPreferredSize(new Dimension(window.getWidth(), 100));
-        mainPanel.add(statusPanel, BorderLayout.NORTH);
-        statusPanel.setSize(window.getWidth(), 100);
+//        window.setLocationRelativeTo(null);
+        window.setLayout(new BorderLayout());
+        statusPanel = new StatusPanel("Welcome to the game!");
+        window.add(statusPanel, BorderLayout.NORTH);
         imageFactory = ImageFactory.getInstance();
     }
 
     public static class Builder {
         MazeObserver mazeObserver;
 
-        public Builder(IMazeSubject mazeSubject) {
-            mazeObserver = new MazeObserver(mazeSubject,"Adventure Game");
-        }
-
-        public Builder(IMazeSubject mazeSubject, String title) {
+        private Builder(IMazeSubject mazeSubject, String title) {
             mazeObserver = new MazeObserver(mazeSubject, title);
         }
 
@@ -194,11 +189,7 @@ public class MazeObserver implements IGameObserver {
 
     @Override
     public void update(String statusMessage) {
-        if (statusPanel != null) {
-            window.remove(statusPanel);
-        }
-        statusPanel = new StatusPanel(statusMessage);
-        window.add(statusPanel, BorderLayout.NORTH);
+        statusPanel.setStatus(statusMessage);
 
         if (mazeSubject != null) {
             updateGamePanel(mazeSubject.getMaze());
