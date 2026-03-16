@@ -1,127 +1,104 @@
 plugins {
-    id 'java'
-    // These next two plugins are for signing and pushing a jar to the Maven repository
-    // There is considerable external setup to do this:
-    //      https://central-stage.sonatype.org/register/central-portal/#choosing-a-namespace
-    id 'maven-publish'
-    id 'signing'
+    id 'base'
+    id 'com.vanniktech.maven.publish' version '0.34.0' apply false
 }
 
-base {
-    group = 'io.github.billwrightcuprof'
-    archivesName = 'csci4448.gameLayout'
-    version = '3.3.0'
+group = 'io.github.billwrightcuprof'
+version = '4.5.0'
+
+ext {
+    pomName = 'CSCI-4448/5448 Game Layout Library'
+    pomDescription = 'This small library uses Java 2D Graphics to lay out a series of connected rooms that form a maze.'
+    pomUrl = 'https://github.com/BillWrightCUProf/CSCI4448GameLayout'
+    pomLicenseName = 'The Apache License, Version 2.0'
+    pomLicenseUrl = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+    pomDeveloperId = 'billwright'
+    pomDeveloperName = 'Bill Wright'
+    pomDeveloperEmail = 'bill.wright@colorado.edu'
+    pomScmConnection = 'scm:git:https://github.com/BillWrightCUProf/CSCI4448GameLayout.git'
+    pomScmDeveloperConnection = 'scm:git:ssh://git@github.com/BillWrightCUProf/CSCI4448GameLayout.git'
+    pomScmUrl = 'https://github.com/BillWrightCUProf/CSCI4448GameLayout'
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
+subprojects {
+    group = rootProject.group
+    version = rootProject.version
 
-repositories {
-    mavenCentral()
-}
-
-sourceSets {
-    integrationTest {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-    }
-}
-
-configurations {
-    integrationTestImplementation.extendsFrom testImplementation
-    integrationTestRuntimeOnly.extendsFrom runtimeOnly
-
-    cucumberRuntime {
-        extendsFrom testImplementation
-    }
-}
-
-dependencies {
-    compileOnly "org.slf4j:slf4j-api:2.0.17"
-    testRuntimeOnly "ch.qos.logback:logback-classic:1.5.32"
-
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.junit.platform:junit-platform-suite:1.10.0'
-
-    // BDD testing libraries
-    testImplementation 'io.cucumber:cucumber-picocontainer:7.21.1'
-    testImplementation 'io.cucumber:cucumber-java:7.21.1'
-    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.21.1'
-}
-
-test {
-    useJUnitPlatform()
-    systemProperty "cucumber.filter.tags", "not @disabled"
-}
-
-signing {
-    sign configurations.archives
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'csci4448.gameLayout'
-            from components.java
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
-            pom {
-                name = 'CSCI-4448/5448: Game Layout Library'
-                // optionally artifactId can be defined here
-                description = 'This small library uses the Java 2D Graphics library to lay out a series of connected rooms that form a maze.'
-                url = 'https://github.com/BillWrightCUProf/CSCI4448GameLayout'
-
-                scm {
-                    connection = 'scm:svn:https://github.com/BillWrightCUProf/CSCI4448GameLayout'
-                    developerConnection = 'scm:svn:https://github.com/BillWrightCUProf/CSCI4448GameLayout'
-                    url = 'http://https://github.com/BillWrightCUProf/CSCI4448GameLayout'
-                }
-
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id = 'billwright'
-                        name = 'Bill Wright'
-                        email = 'bill.wright@colorado.edu'
-                    }
-                }
-            }
-        }
-    }
     repositories {
-        maven {
-//            credentials {
-//                username = System.getenv("mavenCentralUsername")
-//                password = System.getenv("mavenCentralPassword")
-//            }
+        mavenCentral()
+    }
+}
 
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+configure(subprojects.findAll { it.name in [
+        'GameObserverSPI',
+        'GameObserver',
+        'MazeObserver',
+        'AlternateMazeObserver',
+        'AudibleGameObserver'
+] }) {
+    apply plugin: 'java-library'
+    apply plugin: 'com.vanniktech.maven.publish'
+    apply plugin: 'signing'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
+    signing {
+        useGpgCmd()
+    }
+
+    tasks.withType(Javadoc).configureEach {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.quiet()
+    }
+
+    mavenPublishing {
+        publishToMavenCentral()
+
+        signAllPublications()
+
+        coordinates(
+                project.group.toString(),
+                project.name,
+                project.version.toString()
+        )
+
+        pom {
+            name = "${rootProject.ext.pomName} - ${project.name}"
+            description = rootProject.ext.pomDescription
+            url = rootProject.ext.pomUrl
+
+            licenses {
+                license {
+                    name = rootProject.ext.pomLicenseName
+                    url = rootProject.ext.pomLicenseUrl
+                }
+            }
+
+            developers {
+                developer {
+                    id = rootProject.ext.pomDeveloperId
+                    name = rootProject.ext.pomDeveloperName
+                    email = rootProject.ext.pomDeveloperEmail
+                }
+            }
+
+            scm {
+                url = rootProject.ext.pomScmUrl
+                connection = rootProject.ext.pomScmConnection
+                developerConnection = rootProject.ext.pomScmDeveloperConnection
+            }
         }
     }
 }
 
-tasks.withType(Javadoc).configureEach {
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.quiet()
-}
+// In ~/.gradle/gradle.properties put:
+//        mavenCentralUsername=<your-central-portal-username>
+//        mavenCentralPassword=<your-central-portal-password>
+//
+//        signingInMemoryKeyId=<your-key-id>
+//        signingInMemoryKeyPassword=<your-key-password>
+//        signingInMemoryKey=<your-armored-private-key>

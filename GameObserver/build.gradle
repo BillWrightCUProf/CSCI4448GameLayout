@@ -2,13 +2,6 @@ plugins {
     id 'java-library'
 }
 
-group = 'io.github.billwrightcuprof'
-version = '4.0.1'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(":GameObserverSPI")
 
