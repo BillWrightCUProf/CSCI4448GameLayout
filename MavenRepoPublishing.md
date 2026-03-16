@@ -28,6 +28,7 @@ dependencies { implementation 'io.github.billwrightcuprof:MazeObserver:4.5.0' }
 If a consumer directly uses SPI interfaces, it may also need:
 groovy dependencies { implementation 'io.github.billwrightcuprof:GameObserverSPI:4.5.0' }
 
+![mavenrepoartifacts.png](images/mavenrepoartifacts.png)
 
 ## One-time setup
 
