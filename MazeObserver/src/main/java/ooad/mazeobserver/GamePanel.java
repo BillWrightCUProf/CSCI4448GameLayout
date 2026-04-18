@@ -20,6 +20,9 @@ public class GamePanel extends JPanel {
     static Font ROOM_CONTENTS_FONT = new Font("Lucida Grande", Font.ITALIC, 13);
     static Font CHARACTER_LIST_FONT = new Font("Lucida Grande", Font.BOLD, 18);
 
+    private static final int ACTIVE_CHARACTERS_COLUMNS = 20;
+    private static final int ACTIVE_CHARACTERS_ROWS = 10;
+
     Integer roomDimension;
     static Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
     static Color DEFAULT_ROOM_COLOR = Color.GREEN;
@@ -35,7 +38,8 @@ public class GamePanel extends JPanel {
     Color roomBackgroundColor = DEFAULT_ROOM_COLOR;
     Color textColor = DEFAULT_TEXT_COLOR;
 
-    private final JList<String> activeCharactersList = new JList<>();
+    private final DefaultListModel<String> activeCharactersModel = new DefaultListModel<>();
+    private final JList<String> activeCharactersList = new JList<>(activeCharactersModel);
     private final JScrollPane activeCharactersScrollPane = new JScrollPane(activeCharactersList);
 
     public GamePanel(IMaze maze, Map<String, Point> roomLocations, Map<String, Image> roomImages, Map<String, Image> characterImages,
@@ -55,6 +59,22 @@ public class GamePanel extends JPanel {
         configureActiveCharactersList(width, height);
     }
 
+    private Dimension getFixedActiveCharactersListSize() {
+        FontMetrics metrics = activeCharactersList.getFontMetrics(activeCharactersList.getFont());
+
+        int characterWidth = metrics.charWidth('W');
+        int widthPadding = 24;
+        int scrollbarAllowance = 18;
+        int preferredWidth = (ACTIVE_CHARACTERS_COLUMNS * characterWidth) + widthPadding + scrollbarAllowance;
+
+        int rowHeight = Math.max(metrics.getHeight(), activeCharactersList.getFixedCellHeight() > 0
+                ? activeCharactersList.getFixedCellHeight()
+                : metrics.getHeight());
+        int preferredHeight = (ACTIVE_CHARACTERS_ROWS * rowHeight) + 8;
+
+        return new Dimension(preferredWidth, preferredHeight);
+    }
+
     public void setRoomBackground(Color color) {
         roomBackgroundColor = color;
     }
@@ -70,19 +90,15 @@ public class GamePanel extends JPanel {
     }
 
     private void configureActiveCharactersList(Integer panelWidth, Integer panelHeight) {
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String characterName : getSortedActiveCharacterNames()) {
-            listModel.addElement(characterName);
-        }
+        refreshActiveCharactersList();
 
-        activeCharactersList.setModel(listModel);
         activeCharactersList.setFont(CHARACTER_LIST_FONT);
         activeCharactersList.setFocusable(false);
 
         activeCharactersScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         activeCharactersScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        Dimension listSize = getActiveCharactersListPreferredSize(panelWidth, panelHeight);
+        Dimension listSize = getFixedActiveCharactersListSize();
         activeCharactersScrollPane.setPreferredSize(listSize);
         activeCharactersScrollPane.setMaximumSize(listSize);
 
@@ -91,6 +107,13 @@ public class GamePanel extends JPanel {
         topRightPanel.add(activeCharactersScrollPane);
 
         this.add(topRightPanel, BorderLayout.NORTH);
+    }
+
+    private void refreshActiveCharactersList() {
+        activeCharactersModel.clear();
+        for (String characterName : getSortedActiveCharacterNames()) {
+            activeCharactersModel.addElement(characterName);
+        }
     }
 
     private List<String> getSortedActiveCharacterNames() {
@@ -202,6 +225,27 @@ public class GamePanel extends JPanel {
             int numNeighbors = maze.getNeighborsOf(currentRoom).size();
             paintRoomCenteredAt(g2, roomLocations.get(currentRoom), currentRoom, numNeighbors);
         }
+    }
+
+    public void updateMaze(IMaze maze,
+                           Map<String, Point> roomLocations,
+                           Map<String, Image> roomImages,
+                           Map<String, Image> characterImages,
+                           RoomShape roomShape,
+                           Integer width,
+                           Integer height,
+                           Integer roomDimension) {
+        this.maze = maze;
+        this.roomLocations = roomLocations;
+        this.roomImages = roomImages;
+        this.characterImages = characterImages;
+        this.roomShape = roomShape;
+        this.roomDimension = roomDimension;
+
+        refreshActiveCharactersList();
+
+        revalidate();
+        repaint();
     }
 
     private void drawRoomConnections(Graphics2D g2) {

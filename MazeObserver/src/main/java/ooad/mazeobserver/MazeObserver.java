@@ -56,11 +56,11 @@ public class MazeObserver implements IGameObserver {
     }
 
     public MazeObserver() {
-        this(null,"Adventure Game");
+        this(null, "Adventure Game");
     }
 
     public MazeObserver(IMazeSubject mazeSubject) {
-        this(mazeSubject,"Adventure Game");
+        this(mazeSubject, "Adventure Game");
     }
 
     public MazeObserver(IMazeSubject mazeSubject, String title) {
@@ -189,44 +189,78 @@ public class MazeObserver implements IGameObserver {
 
     @Override
     public void update(String statusMessage) {
-        statusPanel.setStatus(statusMessage);
+        // This needs to be invoked on the event dispatch thread for thread safety.
+        Runnable uiUpdate = getRunnableUIUpdate(statusMessage);
 
-        if (mazeSubject != null) {
-            updateGamePanel(mazeSubject.getMaze());
-            window.add(gamePanel, BorderLayout.CENTER);
+        if (SwingUtilities.isEventDispatchThread()) {
+            uiUpdate.run();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(uiUpdate);
+            } catch (Exception e) {
+                logger.error("Failed to update maze UI", e);
+            }
         }
 
-        window.pack();
-        window.setVisible(true);
+        sleepAFewSecondsSoUserCanObserveMaze(delayInSecondsAfterDisplayUpdate);
+    }
+
+    private void sleepAFewSecondsSoUserCanObserveMaze(int sleepSeconds) {
         try {
-            Thread.sleep(delayInSecondsAfterDisplayUpdate * 1000);
+            Thread.sleep(sleepSeconds * 1000L);
         } catch (InterruptedException ex) {
             logger.warn("Display was interrupted...");
-        }
-
-        if (statusMessage.toLowerCase().contains(GAME_END_MESSAGE)) {
-            JOptionPane.showMessageDialog(null, "Click OK to continue");
+            Thread.currentThread().interrupt();
         }
     }
 
-    private void updateGamePanel(IMaze maze) {
+    private Runnable getRunnableUIUpdate(String statusMessage) {
+        Runnable uiUpdate = () -> {
+            statusPanel.setStatus(statusMessage);
+
+            if (mazeSubject != null) {
+                IMaze maze = mazeSubject.getMaze();
+                prepareMazeDisplay(maze);
+
+                if (gamePanel == null) {
+                    gamePanel = createGamePanel(maze);
+                    window.add(gamePanel, BorderLayout.CENTER);
+                } else {
+                    updateGamePanel(maze);
+                }
+            }
+
+            window.pack();
+            window.setVisible(true);
+        };
+        return uiUpdate;
+    }
+
+    private void prepareMazeDisplay(IMaze maze) {
         setRoomLocations(maze);
         setRoomImages(maze);
         setCharacterImages(maze);
+    }
 
-        if (gamePanel != null) {
-            window.remove(gamePanel);
-        }
-        gamePanel = new GamePanel(maze, roomLocations, roomImages, characterImages, roomShape, width, height, roomWidth);
+    private GamePanel createGamePanel(IMaze maze) {
+        GamePanel panel = new GamePanel(maze, roomLocations, roomImages, characterImages, roomShape, width, height, roomWidth);
+        applyPanelColors(panel);
+        return panel;
+    }
 
+    private void updateGamePanel(IMaze maze) {
+        gamePanel.updateMaze(maze, roomLocations, roomImages, characterImages, roomShape, width, height, roomWidth);
+    }
+
+    private void applyPanelColors(GamePanel panel) {
         if (backgroundColor != null) {
-            gamePanel.setBackground(backgroundColor);
+            panel.setBackground(backgroundColor);
         }
         if (roomBackgroundColor != null) {
-            gamePanel.setRoomBackground(roomBackgroundColor);
+            panel.setRoomBackground(roomBackgroundColor);
         }
         if (textColor != null) {
-            gamePanel.setTextColor(textColor);
+            panel.setTextColor(textColor);
         }
     }
 
