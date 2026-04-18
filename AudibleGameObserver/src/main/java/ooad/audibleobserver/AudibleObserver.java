@@ -12,24 +12,11 @@ import java.io.IOException;
 import java.util.Locale;
 
 public class AudibleObserver implements IGameObserver {
-    private static final Logger logger = LoggerFactory.getLogger(AudibleObserver.class);
+    private AudiblePlayer audiblePlayer;
     private static Synthesizer synthesizer;
 
-    // reference: https://www.geeksforgeeks.org/converting-text-speech-java/
-    static {
-        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-        try {
-            Central.registerEngineCentral("com.sun.speech.freetts.jsapi.FreeTTSEngineCentral");
-            // Create a Synthesizer
-            synthesizer = Central.createSynthesizer(
-                    new SynthesizerModeDesc(Locale.US)
-            );
-            // Allocate synthesizer
-            synthesizer.allocate();
-        } catch (EngineException e) {
-            logger.error("Could not initialize the synthesizer: {}", e.getMessage());
-            logger.warn("Falling back to using the say command, if on a Mac, otherwise I'll be silent");
-        }
+    public AudibleObserver(AudiblePlayer audiblePlayer) {
+        this.audiblePlayer = audiblePlayer;
     }
 
     @Override
@@ -38,18 +25,7 @@ public class AudibleObserver implements IGameObserver {
     }
 
     private void speak(String message) {
-        try {
-            if (System.getProperty("os.name").contains("Mac")) {
-                String[] cmd = {"say", "-v", "tara", message};
-                Process sayProcess = Runtime.getRuntime().exec(cmd);
-                sayProcess.waitFor();
-            } else {
-                synthesizer.speakPlainText(message, null);
-                synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
-            }
-        } catch (IOException | InterruptedException e) {
-            logger.error("Could not speak message: {}", message);
-        }
+        audiblePlayer.say(message);
     }
 
 }
