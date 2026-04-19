@@ -8,5 +8,5 @@ public enum EventType {
     CHARACTER_ATE,
     CHARACTER_DRANK,
     ADD_CHARACTER,
-    ALL
+    GAME_OVER, ALL
 }
