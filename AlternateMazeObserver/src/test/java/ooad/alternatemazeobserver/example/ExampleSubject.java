@@ -1,7 +1,7 @@
 package ooad.alternatemazeobserver.example;
 
 
-
+import ooad.alternatemazeobserver.AlternateGraphicalMazeObserver;
 import ooad.alternatemazeobserver.AlternateMazeObserver;
 import ooad.gameobserver.intf.IGame;
 import ooad.gameobserver.intf.IGameObserver;
@@ -65,6 +65,10 @@ public class ExampleSubject implements IGame, IMazeSubject {
         ExampleSubject game = createRoomGrid(4);
         IGameObserver observer = new AlternateMazeObserver(game);
         game.attach(observer);
+        IGameObserver graphicalMazeObserver = new AlternateGraphicalMazeObserver(game);
+        game.attach(graphicalMazeObserver);
+
+        game.playGameWithChangingMazeShape();
     }
 
     static public ExampleSubject createRoomGrid(Integer numRooms) {

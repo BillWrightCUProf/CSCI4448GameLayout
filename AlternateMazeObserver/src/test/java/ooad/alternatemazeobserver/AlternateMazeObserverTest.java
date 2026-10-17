@@ -1,11 +1,9 @@
 package ooad.alternatemazeobserver;
 
+import ooad.alternatemazeobserver.example.ExampleSubject;
 import ooad.gameobserver.intf.IGameObserver;
 import ooad.gameobserver.intf.IMazeSubject;
-import ooad.alternatemazeobserver.example.ExampleSubject;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AlternateMazeObserverTest {
 
