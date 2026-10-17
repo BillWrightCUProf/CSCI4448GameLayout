@@ -7,13 +7,13 @@ class AudibleObserverTest {
 
     @Test
     void mandatoryTest() {
-        AudibleObserver audibleObserver = new AudibleObserver();
+        AudibleObserver audibleObserver = new AudibleObserver(new AudiblePlayer());
         assert audibleObserver != null;
     }
 
     @Disabled
     void testUpdate() {
-        AudibleObserver audibleObserver = new AudibleObserver();
+        AudibleObserver audibleObserver = new AudibleObserver(new AudiblePlayer());
         audibleObserver.update("Game is over");
     }
 

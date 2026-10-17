@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +36,9 @@ public class GamePanel extends JPanel {
     Map<String, Image> roomImages;
     Map<String, Image> characterImages;
 
+    private String selectedRoomName = null;
+    private Point dragOffsetFromRoomCenter = new Point(0, 0);
+
     RoomShape roomShape;
     Color roomBackgroundColor = DEFAULT_ROOM_COLOR;
     Color textColor = DEFAULT_TEXT_COLOR;
@@ -57,6 +62,53 @@ public class GamePanel extends JPanel {
         this.roomDimension = roomRadius;
 
         configureActiveCharactersList(width, height);
+        MouseAdapter mouseAdapter = createRoomDraggingMouseAdapter();
+        this.addMouseListener(mouseAdapter);
+        this.addMouseMotionListener(mouseAdapter);
+    }
+
+    private MouseAdapter createRoomDraggingMouseAdapter() {
+        return new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                selectedRoomName = null;
+                Point clickPoint = e.getPoint();
+                int halfDim = roomDimension / 2;
+
+                for (Map.Entry<String, Point> entry : roomLocations.entrySet()) {
+                    Point center = entry.getValue();
+                    Rectangle bounds = new Rectangle(
+                            center.x - halfDim,
+                            center.y - halfDim,
+                            roomDimension,
+                            roomDimension
+                    );
+
+                    if (bounds.contains(clickPoint)) {
+                        selectedRoomName = entry.getKey();
+                        dragOffsetFromRoomCenter = new Point(clickPoint.x - center.x, clickPoint.y - center.y);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (selectedRoomName != null) {
+                    Point newCenter = new Point(
+                            e.getX() - dragOffsetFromRoomCenter.x,
+                            e.getY() - dragOffsetFromRoomCenter.y
+                    );
+                    roomLocations.put(selectedRoomName, newCenter);
+                    repaint();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                selectedRoomName = null;
+            }
+        };
     }
 
     private Dimension getFixedActiveCharactersListSize() {
@@ -176,10 +228,10 @@ public class GamePanel extends JPanel {
 
         for (String characterName : maze.getCharacters(roomName)) {
             String imageKey = normalizeImageName(characterName);
-            logger.info("Trying to find an image with key: {}", imageKey);
+            logger.debug("Trying to find an image with key: {}", imageKey);
             Image characterImage = characterImages.get(imageKey);
             if (characterImage == null) {
-                logger.info("No image found for character: {}", characterName);
+                logger.debug("No image found for character: {}", characterName);
                 paintCharacterName(g2, characterName, upperRightCorner);
                 upperRightCorner.y += fontHeight + 2;
             } else {

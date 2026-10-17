@@ -8,7 +8,7 @@ plugins {
 dependencies {
     api project(":GameObserverSPI")
 
-    compileOnly "org.slf4j:slf4j-api:2.0.17"
+    implementation "org.slf4j:slf4j-api:2.0.17"
     testRuntimeOnly "ch.qos.logback:logback-classic:1.5.32"
 
     implementation 'org.jgrapht:jgrapht-core:1.5.2'
