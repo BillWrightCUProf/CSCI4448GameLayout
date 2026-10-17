@@ -154,9 +154,21 @@ public class GamePanel extends JPanel {
         activeCharactersScrollPane.setPreferredSize(listSize);
         activeCharactersScrollPane.setMaximumSize(listSize);
 
+        // Create and style the header label for maximum readability
+        JLabel headerLabel = new JLabel("Characters Still Alive", SwingConstants.CENTER);
+        headerLabel.setFont(ROOM_NAME_FONT);
+        headerLabel.setForeground(textColor != null ? textColor : DEFAULT_TEXT_COLOR);
+
+        // Encapsulate the label and scroll pane in a cohesive vertical unit
+        JPanel characterContainer = new JPanel(new BorderLayout(0, 4));
+        characterContainer.setOpaque(false);
+        characterContainer.add(headerLabel, BorderLayout.NORTH);
+        characterContainer.add(activeCharactersScrollPane, BorderLayout.CENTER);
+
+        // Anchor the combined component to the top-right corner
         JPanel topRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
         topRightPanel.setOpaque(false);
-        topRightPanel.add(activeCharactersScrollPane);
+        topRightPanel.add(characterContainer);
 
         this.add(topRightPanel, BorderLayout.NORTH);
     }

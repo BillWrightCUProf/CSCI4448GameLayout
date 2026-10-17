@@ -67,7 +67,7 @@ public class MazeObserver implements IGameObserver {
         this.mazeSubject = mazeSubject;
         window = new JFrame(title);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setResizable(false);
+        window.setResizable(true);
 //        window.setLocationRelativeTo(null);
         window.setLayout(new BorderLayout());
         statusPanel = new StatusPanel("Welcome to the game!");

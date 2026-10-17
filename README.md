@@ -75,8 +75,29 @@ create the observers list.
 ### Version 2.1.0
 * Maze now draws correctly for non-square dimensions
 
-### TODO: Version 2.2.0
-* Add in icons for characters and draw them in the rooms
+### Version 3.0.0
+
+* Upgraded to Java 25
+
+### Version 3.1.0
+
+* Added images of characters if the names match
+
+### Version 4.5.0
+
+* Updated to publish to Maven Central
+
+### Version 4.6.0
+
+* Added Character List display in the upper right corner
+
+### Version 4.7.0
+
+* Added ability to move rooms around and keep the connections so that I can manually improve layout
+* Added ability to resize the viewer
+
+### TODO:
+
 * Run on a separate thread? Or delay after drawing maze
 
 ![FullyConnected16RoomLayout.grid.png](MazeObserver/sampleLayouts/FullyConnected16RoomLayout.grid.png)
