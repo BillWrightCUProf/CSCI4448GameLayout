@@ -1,12 +1,13 @@
 package ooad.gameobserver.intf;
 
 public enum EventType {
-    TREASURE_FOUND,
+    TREASURE_ACQUIRED,
     FIGHT_OCCURRED,
     CHARACTER_DIED,
     CHARACTER_MOVED,
     CHARACTER_ATE,
-    CHARACTER_DRANK,
-    ADD_CHARACTER,
-    GAME_OVER, ALL
+    FINISHED_TURN,
+    GAME_OVER,
+    TREASURE_MAP_ACQUIRED,
+    ALL,
 }

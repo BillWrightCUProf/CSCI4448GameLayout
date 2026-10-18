@@ -51,8 +51,10 @@ bash brew install gnupg
 
 
 ### 4. Create a GPG key
-bash gpg --full-generate-key
 
+```bash
+gpg --full-generate-key
+```
 
 Recommended choices:
 
@@ -60,14 +62,20 @@ Recommended choices:
 - key size: `4096`
 
 ### 5. Find the key ID
-bash gpg --list-secret-keys --keyid-format=long
+
+```bash
+gpg --list-secret-keys --keyid-format=long
+```
 
 Use the key ID from the `sec` line.
 
 ### 6. Publish the public key to a key server
-bash gpg --keyserver keyserver.ubuntu.com --send-keys <key-id>
 
-bash gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID> gpg --keyserver keys.openpgp.org --send-keys <KEY_ID>
+```bash
+gpg --keyserver keyserver.ubuntu.com --send-keys <key-id>
+
+gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID> gpg --keyserver keys.openpgp.org --send-keys <KEY_ID>
+```
 
 
 If Central reports that it cannot find the public key, wait for propagation and then retry publishing.
@@ -116,7 +124,9 @@ Before each release, update the project version.
 
 ### 2. Test signing
 
-bash ./gradlew :AlternateMazeObserver:signMavenPublication
+```bash
+./gradlew :AlternateMazeObserver:signMavenPublication
+```
 
 
 If this fails, check:
@@ -128,8 +138,9 @@ If this fails, check:
 
 ### 3. Publish to Maven Central
 
-bash ./gradlew publishToMavenCentral
-
+```bash
+./gradlew publishToMavenCentral
+```
 
 ### 4. Check Central Portal validation results
 
@@ -141,29 +152,38 @@ If publishing succeeds but validation fails, inspect the exact component validat
 
 If Gradle reports:
 
-text Could not find or load main class org.gradle.wrapper.GradleWrapperMain
-
+```bash
+Could not find or load main class org.gradle.wrapper.GradleWrapperMain
+```
 
 then the Gradle wrapper files are missing or broken.
 
 ### No configured signatory
 
 If Gradle reports:
-text Cannot perform signing task ... because it has no configured signatory
 
+```bash
+Cannot perform signing task ... because it has no configured signatory
+```
 
 then Gradle signing is not configured to use GPG command signing.
 
 ### Problem starting process `gpg`
 
 If Gradle reports:
-text A problem occurred starting process 'command 'gpg''
+
+```bash
+A problem occurred starting process 'command 'gpg''
+```
 
 
 then Gradle cannot find the `gpg` executable.
 
 Set this in `~/.gradle/gradle.properties`:
-text signing.gnupg.executable=/opt/homebrew/bin/gpg
+
+```bash
+signing.gnupg.executable=/opt/homebrew/bin/gpg
+```
 
 where `/opt/homebrew/bin/gpg` is the path to the `gpg` executable.
 
@@ -171,8 +191,9 @@ where `/opt/homebrew/bin/gpg` is the path to the `gpg` executable.
 
 If Gradle reports:
 
-text Could not read PGP secret key
-
+```bash
+Could not read PGP secret key
+```
 
 then the in-memory key configuration is wrong.
 
@@ -182,8 +203,9 @@ The simpler approach is to use local GPG command signing instead of `signingInMe
 
 If Maven Central reports:
 
-text Invalid token
-
+```bash
+Invalid token
+```
 
 then the Central Portal credentials are wrong.
 
@@ -193,8 +215,9 @@ Use the generated **user token** username and password, not the normal website l
 
 If Maven Central reports:
 
-text Invalid signature ... Could not find a public key by the key fingerprint
-
+```bash
+Invalid signature ... Could not find a public key by the key fingerprint
+```
 
 then the public key has not been uploaded to a supported public key server, or it has not propagated yet.
 
@@ -211,14 +234,19 @@ Before publishing a new version:
 - confirm the public key has been uploaded to a public key server
 - run:
 
-bash ./gradlew :AlternateMazeObserver:signMavenPublication
+```bash
+./gradlew :AlternateMazeObserver:signMavenPublication
+```
 
 - run:
 
-bash ./gradlew publishToMavenCentral
+```bash
+./gradlew publishToMavenCentral
+```
 
 Important: `./gradlew publishToMavenCentral` only confirms that the bundle was uploaded.
-A release is not complete until the Central Portal shows successful validation/publication and the artifacts are resolvable from Maven Central.
+A release is not complete until the Central Portal shows successful validation/publication and the artifacts are
+resolvable from Maven Central.
 
 ## Local development notes
 
@@ -231,7 +259,10 @@ That is mainly for local development convenience, not for student use.
 
 For students and other consumers, the preferred approach is to depend on the published Maven Central artifacts.
 
+Once published, you have to go to the website and click
+the "Publish" button:
 
+https://central.sonatype.com/publishing 
 
 
 
