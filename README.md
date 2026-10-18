@@ -96,6 +96,10 @@ create the observers list.
 * Added ability to move rooms around and keep the connections so that I can manually improve layout
 * Added ability to resize the viewer
 
+### Version 4.7.1
+
+* Added ARTIFACT_TAKEN, CHARACTER_SWITCHED_STRATEGY, and NEW_DIE_ACQUIRED to the EventType enum
+
 ### TODO:
 
 * Run on a separate thread? Or delay after drawing maze
