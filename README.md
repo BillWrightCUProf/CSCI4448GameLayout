@@ -100,6 +100,10 @@ create the observers list.
 
 * Added ARTIFACT_TAKEN, CHARACTER_SWITCHED_STRATEGY, and NEW_DIE_ACQUIRED to the EventType enum
 
+### Version 4.7.2
+
+* Restored the ADD_CHARACTER to the EventType enum (classic Chesterton’s Fence mistake)
+
 ### TODO:
 
 * Run on a separate thread? Or delay after drawing maze

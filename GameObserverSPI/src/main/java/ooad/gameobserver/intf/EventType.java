@@ -12,5 +12,7 @@ public enum EventType {
     ARTIFACT_TAKEN,
     NEW_DIE_ACQUIRED,
     TREASURE_MAP_ACQUIRED,
+    // This is used to notify Polymorphia (which must be observing itself) to add a new reincarnated character
+    ADD_CHARACTER,
     ALL,
 }
